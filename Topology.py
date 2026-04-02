@@ -14,7 +14,7 @@ from mininet.util import quietRun
 from os import listdir, environ
 import re
 import sys
-net=Mininet_wifi(link=wmediumd)
+net=Mininet_wifi()
 
 
 def CameraTopology():
@@ -34,19 +34,24 @@ def CameraTopology():
 
         c1=net.addController('c1')
        # c2=net.addController('c2')
-        Middlebox1=net.addStation('Middlebox1',mac='00:00:00:00:1B:01',position='600,250,0')
-        Middlebox2=net.addStation('Middlebox2',mac='00:00:00:00:1B:02',position='2500,250,0')
-        EmergencyCenter=net.addStation('EmergencyCenter',mac='FF:00:00:00:00:00',position='1500,2000,0')
+        Middlebox1=net.addStation('Middlebox1',mac='00:00:00:00:1B:01',position='500,500,0')
+        Middlebox2=net.addStation('Middlebox2',mac='00:00:00:00:1B:02',position='2500,500,0')
 
         EmergencyAP1=net.addAccessPoint('Emergency1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
         EmergencyAP2=net.addAccessPoint('Emergency2AP', ssid='ssid-Emergency2AP', channel='2', position='1500,5,0')
         EmergencyAP3=net.addAccessPoint('Emergency3AP', ssid='ssid-Emergency3AP', channel='2', position='2500,5,0')
         EmergencyAP4=net.addAccessPoint('Emergency4AP', ssid='ssid-Emergency4AP', channel='2', position='3200,5,0')
 
+        EmergencyCenter=net.addHost('Emerctr') #name is character limited
+
         #net.setPropagationModel(model='logDistance', exp=3)
 
         net.configureNodes()
         
+        net.addLink(Cameras1,CameraAccessPoint1)
+        net.addLink(Cameras2,CameraAccessPoint2)
+        net.addLink(Cameras3,CameraAccessPoint3)
+        net.addLink(Cameras4,CameraAccessPoint4)
 
         
         net.addLink(CameraAccessPoint1,CameraAccessPoint2)
@@ -59,10 +64,7 @@ def CameraTopology():
         net.addLink(CameraAccessPoint3,Middlebox2)
         net.addLink(CameraAccessPoint4,Middlebox2)
 
-        net.addLink(EmergencyCenter,EmergencyAP1)
-        net.addLink(EmergencyCenter,EmergencyAP2)
-        net.addLink(EmergencyCenter,EmergencyAP3)
-        net.addLink(EmergencyCenter,EmergencyAP4)
+        net.addLink(EmergencyCenter,c1)
 
       #  net.addLink(EmergencyCenter,Middlebox1)
       #  net.addLink(EmergencyCenter,Middlebox2)
@@ -93,13 +95,10 @@ def SetupSDN():
         print("")
 
 setLogLevel('info')
-try :
-    CameraTopology()
-    info("*** Running CLI\n")
-    CLI(net)
 
-    info("*** Stopping network\n")
-    net.stop()
-except:
-       print("Error")
-       
+CameraTopology()
+info("*** Running CLI\n")
+CLI(net)
+
+info("*** Stopping network\n")
+net.stop()
