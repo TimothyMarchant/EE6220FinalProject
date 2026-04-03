@@ -35,7 +35,6 @@ def CameraTopology():
         CameraAccessPoint4=net.addAccessPoint('Camera4AP', ssid='ssid-Camera4AP', channel='1', position='3000,5,0')
 
         c1=net.addController('c1',controller=RemoteController,ip=ryu_ip,port=ryu_port)
-       # c2=net.addController('c2')
         s1=net.addSwitch('s1')
 
         #Middlebox1=net.addStation('Middlebox1',mac='00:00:00:00:1B:01',position='500,500,0')
@@ -60,21 +59,16 @@ def CameraTopology():
         net.addLink(Cameras4,CameraAccessPoint4)
 
         
-        #net.addLink(CameraAccessPoint1,CameraAccessPoint2)
-        #net.addLink(CameraAccessPoint2,CameraAccessPoint3)
-        #net.addLink(CameraAccessPoint3,CameraAccessPoint4)
-     #   net.addLink(CameraAccessPoint4,CameraAccessPoint1)
 
-        net.addLink(CameraAccessPoint1,Middlebox1)
-        net.addLink(CameraAccessPoint2,Middlebox1)
-        net.addLink(CameraAccessPoint3,Middlebox2)
-        net.addLink(CameraAccessPoint4,Middlebox2)
         
         
 
         net.addLink(Middlebox1,s1)
         net.addLink(Middlebox2,s1)
-
+        net.addLink(CameraAccessPoint1,s1)
+        net.addLink(CameraAccessPoint2,s1)
+        net.addLink(CameraAccessPoint3,s1)
+        net.addLink(CameraAccessPoint4,s1)
         net.addLink(EmergencyCenter,s1)
 
       #  net.addLink(EmergencyCenter,Middlebox1)
