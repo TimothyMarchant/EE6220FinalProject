@@ -16,6 +16,8 @@ import re
 import sys
 net=Mininet_wifi()
 
+ryu_ip = '127.0.0.1'
+ryu_port = 6653
 
 def CameraTopology():
         global net
@@ -32,10 +34,12 @@ def CameraTopology():
         CameraAccessPoint3=net.addAccessPoint('Camera3AP', ssid='ssid-Camera3AP', channel='1', position='2000,5,0')
         CameraAccessPoint4=net.addAccessPoint('Camera4AP', ssid='ssid-Camera4AP', channel='1', position='3000,5,0')
 
-        c1=net.addController('c1')
+        c1=net.addController('c1',controller=RemoteController,ip=ryu_ip,port=ryu_port)
        # c2=net.addController('c2')
-        Middlebox1=net.addStation('Middlebox1',mac='00:00:00:00:1B:01',position='500,500,0')
-        Middlebox2=net.addStation('Middlebox2',mac='00:00:00:00:1B:02',position='2500,500,0')
+        s1=net.addSwitch('s1')
+
+        #Middlebox1=net.addStation('Middlebox1',mac='00:00:00:00:1B:01',position='500,500,0')
+        #Middlebox2=net.addStation('Middlebox2',mac='00:00:00:00:1B:02',position='2500,500,0')
 
         EmergencyAP1=net.addAccessPoint('Emergency1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
         EmergencyAP2=net.addAccessPoint('Emergency2AP', ssid='ssid-Emergency2AP', channel='2', position='1500,5,0')
@@ -43,6 +47,8 @@ def CameraTopology():
         EmergencyAP4=net.addAccessPoint('Emergency4AP', ssid='ssid-Emergency4AP', channel='2', position='3200,5,0')
 
         EmergencyCenter=net.addHost('Emerctr') #name is character limited
+        Middlebox1=net.addHost('Mid1')
+        Middlebox2=net.addHost('Mid2')
 
         #net.setPropagationModel(model='logDistance', exp=3)
 
@@ -54,17 +60,22 @@ def CameraTopology():
         net.addLink(Cameras4,CameraAccessPoint4)
 
         
-        net.addLink(CameraAccessPoint1,CameraAccessPoint2)
-        net.addLink(CameraAccessPoint2,CameraAccessPoint3)
-        net.addLink(CameraAccessPoint3,CameraAccessPoint4)
-        net.addLink(CameraAccessPoint4,CameraAccessPoint1)
+        #net.addLink(CameraAccessPoint1,CameraAccessPoint2)
+        #net.addLink(CameraAccessPoint2,CameraAccessPoint3)
+        #net.addLink(CameraAccessPoint3,CameraAccessPoint4)
+     #   net.addLink(CameraAccessPoint4,CameraAccessPoint1)
 
         net.addLink(CameraAccessPoint1,Middlebox1)
         net.addLink(CameraAccessPoint2,Middlebox1)
         net.addLink(CameraAccessPoint3,Middlebox2)
         net.addLink(CameraAccessPoint4,Middlebox2)
+        
+        
 
-        net.addLink(EmergencyCenter,c1)
+        net.addLink(Middlebox1,s1)
+        net.addLink(Middlebox2,s1)
+
+        net.addLink(EmergencyCenter,s1)
 
       #  net.addLink(EmergencyCenter,Middlebox1)
       #  net.addLink(EmergencyCenter,Middlebox2)
@@ -74,7 +85,7 @@ def CameraTopology():
 
         net.build()
         c1.start()
-        #c2.start()
+      #  c2.start()
         CameraAccessPoint1.start([c1])
         CameraAccessPoint2.start([c1])
         CameraAccessPoint3.start([c1])
@@ -98,6 +109,7 @@ setLogLevel('info')
 
 CameraTopology()
 info("*** Running CLI\n")
+net.start()
 CLI(net)
 
 info("*** Stopping network\n")
