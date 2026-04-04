@@ -14,7 +14,7 @@ from mininet.util import quietRun
 from os import listdir, environ
 import re
 import sys
-net=Mininet_wifi()
+net=Mininet_wifi(link = TCLink)
 
 ryu_ip = '127.0.0.1'
 ryu_port = 6653
@@ -22,13 +22,13 @@ ryu_port = 6653
 def CameraTopology():
         global net
     #Camera topology
-        print("RAN")
         info("Creating Nodes\n")
         
         Cameras1 = net.addStation('Cameras1', mac='00:00:00:00:00:01', position='1,0,0')
         Cameras2 = net.addStation('Cameras2', mac='00:00:00:00:00:02', position='1000,0,0')
         Cameras3 = net.addStation('Cameras3', mac='00:00:00:00:00:03', position='2000,0,0')
         Cameras4 = net.addStation('Cameras4', mac='00:00:00:00:00:04', position='3000,0,0')
+        ###Use channel 1.  They do not overlap.
         CameraAccessPoint1=net.addAccessPoint('Camera1AP', ssid='ssid-Camera1AP', channel='1', position='1,5,0')
         CameraAccessPoint2=net.addAccessPoint('Camera2AP', ssid='ssid-Camera2AP', channel='1', position='1000,5,0')
         CameraAccessPoint3=net.addAccessPoint('Camera3AP', ssid='ssid-Camera3AP', channel='1', position='2000,5,0')
@@ -36,10 +36,10 @@ def CameraTopology():
 
         c1=net.addController('c1',controller=RemoteController,ip=ryu_ip,port=ryu_port)
         s1=net.addSwitch('s1')
+        s2=net.addSwitch('s2')
+        s3=net.addSwitch('s3')
 
-        #Middlebox1=net.addStation('Middlebox1',mac='00:00:00:00:1B:01',position='500,500,0')
-        #Middlebox2=net.addStation('Middlebox2',mac='00:00:00:00:1B:02',position='2500,500,0')
-
+        ###Use channel 2 overlaps with channel 1.
         EmergencyAP1=net.addAccessPoint('Emergency1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
         EmergencyAP2=net.addAccessPoint('Emergency2AP', ssid='ssid-Emergency2AP', channel='2', position='1500,5,0')
         EmergencyAP3=net.addAccessPoint('Emergency3AP', ssid='ssid-Emergency3AP', channel='2', position='2500,5,0')
@@ -48,28 +48,31 @@ def CameraTopology():
         EmergencyCenter=net.addHost('Emerctr') #name is character limited
         Middlebox1=net.addHost('Mid1')
         Middlebox2=net.addHost('Mid2')
-
+        Datacenter=net.addHost('data')
         #net.setPropagationModel(model='logDistance', exp=3)
 
         net.configureNodes()
         
-        net.addLink(Cameras1,CameraAccessPoint1)
-        net.addLink(Cameras2,CameraAccessPoint2)
-        net.addLink(Cameras3,CameraAccessPoint3)
-        net.addLink(Cameras4,CameraAccessPoint4)
+        net.addLink(Cameras1,CameraAccessPoint1,bw=10)
+        net.addLink(Cameras2,CameraAccessPoint2,bw=10)
+        net.addLink(Cameras3,CameraAccessPoint3,bw=10)
+        net.addLink(Cameras4,CameraAccessPoint4,bw=10)
 
         
 
         
         
 
-        net.addLink(Middlebox1,s1)
-        net.addLink(Middlebox2,s1)
-        net.addLink(CameraAccessPoint1,s1)
-        net.addLink(CameraAccessPoint2,s1)
-        net.addLink(CameraAccessPoint3,s1)
-        net.addLink(CameraAccessPoint4,s1)
-        net.addLink(EmergencyCenter,s1)
+        net.addLink(Middlebox1,s1,bw=50)
+        net.addLink(Middlebox2,s2,bw=50)
+        net.addLink(CameraAccessPoint1,s1,bw=20)
+        net.addLink(CameraAccessPoint2,s1,bw=20)
+        net.addLink(CameraAccessPoint3,s2,bw=20)
+        net.addLink(CameraAccessPoint4,s2,bw=20)
+        net.addLink(EmergencyCenter,s3,bw=100)
+        net.addLink(s1,s3,bw=100)
+        net.addLink(s2,s3,bw=100)
+        net.addLink(Datacenter,s3,bw=100)
 
       #  net.addLink(EmergencyCenter,Middlebox1)
       #  net.addLink(EmergencyCenter,Middlebox2)
