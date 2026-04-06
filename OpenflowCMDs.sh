@@ -21,7 +21,8 @@ ovs-ofctl add-flow s1 priority=500,in_port=1,ip,nw_dst=10.0.0.1,actions=normal
 ovs-ofctl add-flow s1 priority=500,ip,nw_src=10.0.0.2,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s1 priority=500,in_port=1,ip,nw_dst=10.0.0.2,actions=normal
 
-
+ovs-ofctl add-flow s1 priority=500,in_port=4,actions=drop
+ovs-ofctl add-flow s1 priority=500,in_port=5,actions=drop
 
 
 ovs-ofctl add-flow Camera1AP actions=normal
@@ -39,7 +40,8 @@ ovs-ofctl add-flow s2 priority=500,in_port=1,ip,nw_dst=10.0.1.1,actions=normal
 ovs-ofctl add-flow s2 priority=500,ip,nw_src=10.0.1.2,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s2 priority=500,in_port=1,ip,nw_dst=10.0.1.2,actions=normal
 
-
+ovs-ofctl add-flow s1 priority=500,in_port=4,actions=drop
+ovs-ofctl add-flow s1 priority=500,in_port=5,actions=drop
 
 
 ovs-ofctl add-flow Camera3AP actions=normal

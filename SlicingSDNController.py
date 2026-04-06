@@ -18,7 +18,7 @@ class L2Switch(app_manager.RyuApp):
         ofp = dp.ofproto
         ofp_parser = dp.ofproto_parser
 
-        actions = [ofp_parser.OFPActionOutput(ofp.OFPP_FLOOD)]
+        actions = [ofp_parser.OFPActionOutput(ofp.OFP)]
 
         data = None
         if msg.buffer_id == ofp.OFP_NO_BUFFER:
