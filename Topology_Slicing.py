@@ -44,7 +44,10 @@ def CameraTopology():
         s4=net.addSwitch('s4')
         s5=net.addSwitch('s5')
         s6=net.addSwitch('s6')
-
+        Mid1HighBandwidthSwitch=net.addSwitch('s1HIGH')
+        Mid1LowBandwidthSwitch=net.addSwitch('s1LOW')
+        Mid2HighBandwidthSwitch=net.addSwitch('s2HIGH')
+        Mid2LowBandwidthSwitch=net.addSwitch('s2LOW')
         ###Use channel 2 overlaps with channel 1.
         EmergencyAP1=net.addAccessPoint('Emergency1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
         EmergencyAP2=net.addAccessPoint('Emergency2AP', ssid='ssid-Emergency2AP', channel='2', position='1000,500,0')
@@ -54,7 +57,7 @@ def CameraTopology():
         EmergencyCenter=net.addHost('Emerctr',ip='10.0.5.0') #name is character limited
         Middlebox1=net.addHost('Mid1',ip='10.0.4.1')
         Middlebox2=net.addHost('Mid2',ip='10.0.4.2')
-        Datacenter=net.addHost('data',ip='10.0.6.1')
+        Datacenter=net.addHost('data',ip='10.0.6.0')
         #net.setPropagationModel(model='logDistance', exp=3)
 
         net.configureNodes()
@@ -65,22 +68,41 @@ def CameraTopology():
         net.addLink(Middlebox1,s1,port1=1,port2=1,bw=50)
         net.addLink(Middlebox2,s2,port1=1,port2=1,bw=50)
         #Camera access point connections to switches s1 and s2
-        net.addLink(CameraAccessPoint1,s1,port1=2,bw=20) #Connect to S1.  Connects to box 1
-        net.addLink(CameraAccessPoint2,s1,port1=2,bw=20) #Connect to S1.  Connects to box 1
-        net.addLink(CameraAccessPoint3,s2,port1=2,bw=20) #Connect to S2.  Connects to box 2
-        net.addLink(CameraAccessPoint4,s2,port1=2,bw=20) #Connect to S2.  Connects to box 2
-        #emergency center connection
-        net.addLink(EmergencyCenter,s5,port2=4,bw=100) #High bandwidth
+        net.addLink(CameraAccessPoint1,s1,port1=2,port2=2,bw=20) #Connect to S1.  Connects to box 1
+        net.addLink(CameraAccessPoint2,s1,port1=2,port2=3,bw=20) #Connect to S1.  Connects to box 1
+        net.addLink(CameraAccessPoint3,s2,port1=2,port2=2,bw=20) #Connect to S2.  Connects to box 2
+        net.addLink(CameraAccessPoint4,s2,port1=2,port2=3,bw=20) #Connect to S2.  Connects to box 2
+
         #switch connections
-        net.addLink(s1,s5,port2=1,bw=50)
-        net.addLink(s2,s5,port2=2,bw=50)
-        net.addLink(s1,s3,port2=1,bw=100) #cannot make switch from Box 1 to S3 without causing problems.
-        net.addLink(s2,s3,port2=2,bw=100) #cannot make switch from Box 2 to S3 without causing problems.
-        net.addLink(s3,s4,port2=1,bw=100)
-        #net.addLink(s3,s5,port2=3,bw=100)
+        #Network slicing.  Send image data over larger bandwidth, send smaller data over the other link.
+        #Middlebox 1
+        net.addLink(s1,Mid1HighBandwidthSwitch,port1=4,port2=1,bw=50)
+        net.addLink(s1,Mid1LowBandwidthSwitch,port1=5,port2=1,bw=2)
+        #Middlebox 2
+        net.addLink(s2,Mid2HighBandwidthSwitch,port1=4,port2=1,bw=50)
+        net.addLink(s2,Mid2LowBandwidthSwitch,port1=5,port2=1,bw=2)
+        #Connect to switch 3 which connects the entire network.
+        #connect S1
+        net.addLink(Mid1HighBandwidthSwitch,s3,port1=2,port2=1,bw=50)
+        net.addLink(Mid1LowBandwidthSwitch,s3,port1=2,port2=2,bw=2)
+        #Connect S2
+        net.addLink(Mid2HighBandwidthSwitch,s3,port1=2,port2=3,bw=50)
+        net.addLink(Mid2LowBandwidthSwitch,s3,port1=2,port2=4,bw=2)
+        #make remaining switch connections
+        #Connect S4
+        net.addLink(s3,s4,port1=5,port2=1,bw=75)
+        #Connect S5
+        net.addLink(s3,s5,port1=6,port2=1,bw=75)
 
+        #Storage and emergencenter connections
         net.addLink(Datacenter,s4,port2=2,bw=100) #Data storage platform.
-
+        #emergency center connection
+        net.addLink(EmergencyCenter,s5,port2=2,bw=100) #High bandwidth
+        #Connect Emergency APs to their nearby middlebox
+        net.addLink(EmergencyAP1,s1,port1=2,port2=6,bw=2)
+        net.addLink(EmergencyAP2,s1,port1=2,port2=7,bw=2)
+        net.addLink(EmergencyAP3,s1,port1=2,port2=6,bw=2)
+        net.addLink(EmergencyAP4,s1,port1=2,port2=7,bw=2)
 
 
 
