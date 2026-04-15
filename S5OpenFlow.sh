@@ -27,8 +27,8 @@ TextDataPort=80
 
 #Add flows for s5 not many
 #Image data has higher priority than text data.
-ovs-ofctl add-flow s5 priority=200,tp_dst=7777,actions=normal
-ovs-ofctl add-flow s5 priority=150,tp_dst=80,actions=normal
+ovs-ofctl add-flow s5 priority=200,dl_type=0x800,nw_proto=6,tp_dst=7777,actions=normal
+ovs-ofctl add-flow s5 priority=150,dl_type=0x800,nw_proto=6,tp_dst=80,actions=normal
 ovs-ofctl add-flow s5 priority=100,actions=normal
 
 

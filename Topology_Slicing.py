@@ -49,10 +49,10 @@ def CameraTopology():
         Mid2HighBandwidthSwitch=net.addSwitch('s2HIGH')
         Mid2LowBandwidthSwitch=net.addSwitch('s2LOW')
         ###Use channel 2 overlaps with channel 1.
-        EmergencyAP1=net.addAccessPoint('Emergency1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
-        EmergencyAP2=net.addAccessPoint('Emergency2AP', ssid='ssid-Emergency2AP', channel='2', position='1000,500,0')
-        EmergencyAP3=net.addAccessPoint('Emergency3AP', ssid='ssid-Emergency3AP', channel='2', position='0,500,0')
-        EmergencyAP4=net.addAccessPoint('Emergency4AP', ssid='ssid-Emergency4AP', channel='2', position='500,1000,0')
+        EmergencyAP1=net.addAccessPoint('Emer1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
+        EmergencyAP2=net.addAccessPoint('Emer2AP', ssid='ssid-Emergency2AP', channel='2', position='1000,500,0')
+        EmergencyAP3=net.addAccessPoint('Emer3AP', ssid='ssid-Emergency3AP', channel='2', position='0,500,0')
+        EmergencyAP4=net.addAccessPoint('Emer4AP', ssid='ssid-Emergency4AP', channel='2', position='500,1000,0')
         #Add wire hosts
         EmergencyCenter=net.addHost('Emerctr',ip='10.0.5.0') #name is character limited
         Middlebox1=net.addHost('Mid1',ip='10.0.4.1')
@@ -99,10 +99,10 @@ def CameraTopology():
         #emergency center connection
         net.addLink(EmergencyCenter,s5,port2=2,bw=100) #High bandwidth
         #Connect Emergency APs to their nearby middlebox
-        net.addLink(EmergencyAP1,s1,port1=2,port2=6,bw=2)
-        net.addLink(EmergencyAP2,s1,port1=2,port2=7,bw=2)
-        net.addLink(EmergencyAP3,s1,port1=2,port2=6,bw=2)
-        net.addLink(EmergencyAP4,s1,port1=2,port2=7,bw=2)
+        net.addLink(EmergencyAP1,s1,port2=6,bw=2)
+        net.addLink(EmergencyAP2,s1,port2=7,bw=2)
+        net.addLink(EmergencyAP3,s2,port2=6,bw=2)
+        net.addLink(EmergencyAP4,s2,port2=7,bw=2)
 
 
 

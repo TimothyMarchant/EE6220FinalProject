@@ -33,8 +33,8 @@ ovs-ofctl add-flow Camera2AP actions=normal
 ovs-ofctl add-flow Camera3AP actions=normal
 ovs-ofctl add-flow Camera4AP actions=normal
 
-ovs-ofctl add-flow Emergency1AP actions=normal
-ovs-ofctl add-flow Emergency2AP actions=normal
-ovs-ofctl add-flow Emergency3AP actions=normal
-ovs-ofctl add-flow Emergency4AP actions=normal
+ovs-ofctl add-flow Emer1AP actions=normal
+ovs-ofctl add-flow Emer2AP actions=normal
+ovs-ofctl add-flow Emer3AP actions=normal
+ovs-ofctl add-flow Emer4AP actions=normal
 

@@ -25,5 +25,5 @@ EmergencyAP2Port=7
 ImageServerPort=7777
 TextDataPort=80
 
-ovs-ofctl add-flow s4 priority=200,tp_dst=7777,actions=normal
+ovs-ofctl add-flow s4 priority=200,dl_type=0x800,nw_proto=6,tp_dst=7777,actions=normal
 ovs-ofctl add-flow s4 priority=100,actions=normal
