@@ -6,7 +6,7 @@ Camera2IPRange=10.0.1.0/24
 MiddleboxIPRange=10.0.4.0/24
 Middlebox1=10.0.4.1
 Middlebox2=10.0.4.2
-DatacenterIP=10.0.6.0
+DataCenterIP=10.0.6.0
 EmergencyCenterIP=10.0.5.0
 EmergencyVehiclesIPRange=12.0.0.0/16
 #port towards middlebox
@@ -28,5 +28,13 @@ TextDataPort=80
 #S3 middle switch
 #higher priority for emergency center
 ovs-ofctl add-flow s3 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=normal
-
-ovs-ofctl add-flow s3 priority=100,actions=normal
+ovs-ofctl add-flow s3 priority=100,ip,ip_dst=$DataCenterIP,actions=normal
+ovs-ofctl add-flow s3 priority=120,ip,ip_dst=$Middlebox1,actions=output:2
+ovs-ofctl add-flow s3 priority=120,ip,ip_dst=$Middlebox2,actions=output:4
+#ICMP
+ovs-ofctl add-flow s3 priority=200,icmp,ip_dst=$EmergencyCenterIP,actions=normal
+ovs-ofctl add-flow s3 priority=100,icmp,ip_dst=$DataCenterIP,actions=normal
+ovs-ofctl add-flow s3 priority=120,icmp,ip_dst=$Middlebox1,actions=output:2
+ovs-ofctl add-flow s3 priority=120,icmp,ip_dst=$Middlebox2,actions=output:4
+#Drop all other data
+ovs-ofctl add-flow s3 priority=80,actions=drop

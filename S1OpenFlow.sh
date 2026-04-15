@@ -39,12 +39,12 @@ ovs-ofctl add-flow s1 priority=500,icmp,nw_src=$Camera1IPRange,actions=output:$M
 ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera1IPRange,actions=normal
 ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,icmp,nw_dst=$Camera1IPRange,actions=normal
 
-ovs-ofctl add-flow s1 priority=500,ip,nw_src=$Camera1,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera1,actions=normal
-ovs-ofctl add-flow s1 priority=500,ip,nw_src=$Camera2,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera2,actions=normal
-ovs-ofctl add-flow s1 priority=500,in_port=$HighBandWidthPort,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=500,in_port=$LowBandWidthPort,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,ip,nw_src=$Camera1,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,ip,nw_dst=$Camera1,actions=normal
+ovs-ofctl add-flow s1 priority=100,ip,nw_src=$Camera2,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,ip,nw_dst=$Camera2,actions=normal
+ovs-ofctl add-flow s1 priority=100,in_port=$HighBandWidthPort,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$LowBandWidthPort,actions=output:$MiddleboxPort
 #Traffic that should never be accepted (shouldn't happen).
 ovs-ofctl add-flow s1 priority=600,ip,ip_dst=$Middlebox2,actions=drop
 ovs-ofctl add-flow s1 priority=600,ip,ip_dst=$Middlebox2,actions=drop
@@ -54,8 +54,8 @@ ovs-ofctl add-flow s1 priority=600,ip,ip_src=$Middlebox1,in_port=$LowBandWidthPo
 
 
 #Setting up Network Slicing.
-ovs-ofctl add-flow s1 priority=600,dl_type=0x800,nw_proto=6,tp_dst=$ImageServerPort,actions=output:$HighBandWidthPort
-ovs-ofctl add-flow s1 priority=600,dl_type=0x800,nw_proto=6,tp_dst=$TextDataPort,actions=output:$LowBandWidthPort
+ovs-ofctl add-flow s1 priority=200,dl_type=0x800,nw_proto=6,tp_dst=$ImageServerPort,actions=output:$HighBandWidthPort
+ovs-ofctl add-flow s1 priority=200,dl_type=0x800,nw_proto=6,tp_dst=$TextDataPort,actions=output:$LowBandWidthPort
 
 #Higher priority for emergency center
 ovs-ofctl add-flow $HighBandWidth1 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=normal
@@ -68,6 +68,6 @@ ovs-ofctl add-flow s1 priority=50,ip,ip_dst=$EmergencyCenterIP,actions=output:$L
 ovs-ofctl add-flow s1 priority=50,icmp,ip_dst=$DataCenterIP,actions=output:$LowBandWidthPort
 ovs-ofctl add-flow s1 priority=50,ip,ip_dst=$DataCenterIP,actions=output:$LowBandWidthPort
 #Emergency AP
-ovs-ofctl add-flow s1 priority=600,in_port=$EmergencyAP1Port,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=600,in_port=$EmergencyAP2Port,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$EmergencyAP1Port,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$EmergencyAP2Port,actions=output:$MiddleboxPort
 
