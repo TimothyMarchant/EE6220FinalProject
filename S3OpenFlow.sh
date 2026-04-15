@@ -37,4 +37,8 @@ ovs-ofctl add-flow s3 priority=100,icmp,ip_dst=$DataCenterIP,actions=normal
 ovs-ofctl add-flow s3 priority=120,icmp,ip_dst=$Middlebox1,actions=output:2
 ovs-ofctl add-flow s3 priority=120,icmp,ip_dst=$Middlebox2,actions=output:4
 #Drop all other data
-ovs-ofctl add-flow s3 priority=80,actions=drop
+ovs-ofctl add-flow s3 priority=800,arp,ip_dst=$Middlebox2,actions=output:4
+ovs-ofctl add-flow s3 priority=800,arp,ip_dst=$Middlebox1,actions=output:2
+ovs-ofctl add-flow s3 priority=100,actions=normal
+ovs-ofctl add-flow s3 priority=1000,ip,ip_src=127.0.0.1,actions=normal
+#ovs-ofctl add-flow s3 priority=80,actions=drop

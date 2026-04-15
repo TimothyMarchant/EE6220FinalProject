@@ -27,3 +27,6 @@ TextDataPort=80
 
 ovs-ofctl add-flow s4 priority=200,dl_type=0x800,nw_proto=6,tp_dst=7777,actions=normal
 ovs-ofctl add-flow s4 priority=100,actions=normal
+
+ovs-ofctl add-flow s4 priority=800,arp,actions=normal
+ovs-ofctl add-flow s4 priority=1000,ip,ip_src=127.0.0.1,actions=normal

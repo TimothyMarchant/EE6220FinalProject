@@ -70,4 +70,5 @@ ovs-ofctl add-flow s2 priority=50,ip,ip_dst=$DataCenterIP,actions=output:$LowBan
 #Emergency AP
 ovs-ofctl add-flow s2 priority=600,in_port=$EmergencyAP1Port,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s2 priority=600,in_port=$EmergencyAP2Port,actions=output:$MiddleboxPort
-
+ovs-ofctl add-flow s2 priority=800,arp,actions=normal
+ovs-ofctl add-flow s2 priority=1000,ip,ip_src=127.0.0.1,actions=normal
