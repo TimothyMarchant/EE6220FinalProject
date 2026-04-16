@@ -45,11 +45,11 @@ ovs-ofctl add-flow s1 priority=100,ip,nw_src=$Camera2,actions=output:$MiddleboxP
 ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,ip,nw_dst=$Camera2,actions=normal
 #ARP rules
 #camera 1
-ovs-ofctl add-flow s1 priority=1000,arp,nw_src=$Camera1,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=1000,in_port=$MiddleboxPort,arp,nw_dst=$Camera1,actions=normal
+ovs-ofctl add-flow s1 priority=1200,arp,nw_src=$Camera1,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=1200,in_port=$MiddleboxPort,arp,nw_dst=$Camera1,actions=normal
 #camera 2
-ovs-ofctl add-flow s1 priority=1000,arp,nw_src=$Camera2,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=1000,in_port=$MiddleboxPort,arp,nw_dst=$Camera2,actions=normal
+ovs-ofctl add-flow s1 priority=1200,arp,nw_src=$Camera2,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=1200,in_port=$MiddleboxPort,arp,nw_dst=$Camera2,actions=normal
 
 #Port to middlebox from network slicing.
 ovs-ofctl add-flow s1 priority=100,in_port=$HighBandWidthPort,actions=output:$MiddleboxPort
@@ -79,5 +79,5 @@ ovs-ofctl add-flow s1 priority=50,ip,ip_dst=$DataCenterIP,actions=output:$LowBan
 #Emergency AP
 ovs-ofctl add-flow s1 priority=100,in_port=$EmergencyAP1Port,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s1 priority=100,in_port=$EmergencyAP2Port,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=800,arp,actions=normal
-ovs-ofctl add-flow s1 priority=1000,ip,ip_src=127.0.0.1,actions=normal
+#ovs-ofctl add-flow s1 priority=800,arp,actions=normal
+#ovs-ofctl add-flow s1 priority=1000,ip,ip_src=127.0.0.1,actions=normal
