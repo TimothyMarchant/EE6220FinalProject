@@ -33,16 +33,25 @@ ImageServerPort=7777
 TextDataPort=80
 
 #s1 definitions.
-ovs-ofctl add-flow s1 priority=500,ip,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=500,icmp,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
+#ovs-ofctl add-flow s1 priority=500,ip,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
+#ovs-ofctl add-flow s1 priority=500,icmp,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
 
-ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera1IPRange,actions=normal
-ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,icmp,nw_dst=$Camera1IPRange,actions=normal
-
+#ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera1IPRange,actions=normal
+#ovs-ofctl add-flow s1 priority=500,in_port=$MiddleboxPort,icmp,nw_dst=$Camera1IPRange,actions=normal
+#Rules for cameras
 ovs-ofctl add-flow s1 priority=100,ip,nw_src=$Camera1,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,ip,nw_dst=$Camera1,actions=normal
 ovs-ofctl add-flow s1 priority=100,ip,nw_src=$Camera2,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,ip,nw_dst=$Camera2,actions=normal
+#ARP rules
+#camera 1
+ovs-ofctl add-flow s1 priority=100,arp,nw_src=$Camera1,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,arp,nw_dst=$Camera1,actions=normal
+#camera 2
+ovs-ofctl add-flow s1 priority=100,arp,nw_src=$Camera2,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,arp,nw_dst=$Camera2,actions=normal
+
+#Port to middlebox from network slicing.
 ovs-ofctl add-flow s1 priority=100,in_port=$HighBandWidthPort,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s1 priority=100,in_port=$LowBandWidthPort,actions=output:$MiddleboxPort
 #Traffic that should never be accepted (shouldn't happen).

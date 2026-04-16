@@ -51,7 +51,13 @@ ovs-ofctl add-flow s2 priority=600,ip,ip_dst=$Middlebox1,actions=drop
 ovs-ofctl add-flow s2 priority=600,ip,ip_src=$Middlebox2,in_port=$HighBandWidthPort,actions=drop
 ovs-ofctl add-flow s2 priority=600,ip,ip_src=$Middlebox2,in_port=$LowBandWidthPort,actions=drop
 
-
+#ARP rules
+#camera 1
+ovs-ofctl add-flow s1 priority=100,arp,nw_src=$Camera3,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,arp,nw_dst=$Camera3,actions=normal
+#camera 2
+ovs-ofctl add-flow s1 priority=100,arp,nw_src=$Camera4,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=100,in_port=$MiddleboxPort,arp,nw_dst=$Camera4,actions=normal
 
 #Setting up Network Slicing.
 ovs-ofctl add-flow s2 priority=600,dl_type=0x800,nw_proto=6,tp_dst=$ImageServerPort,actions=output:$HighBandWidthPort
