@@ -27,13 +27,13 @@ TextDataPort=80
 
 #S3 middle switch
 #higher priority for emergency center
-ovs-ofctl add-flow s3 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=normal
-ovs-ofctl add-flow s3 priority=100,ip,ip_dst=$DataCenterIP,actions=normal
+ovs-ofctl add-flow s3 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=output:6
+ovs-ofctl add-flow s3 priority=100,ip,ip_dst=$DataCenterIP,actions=output:5
 ovs-ofctl add-flow s3 priority=120,ip,ip_dst=$Middlebox1,actions=output:2
 ovs-ofctl add-flow s3 priority=120,ip,ip_dst=$Middlebox2,actions=output:4
 #ICMP
-ovs-ofctl add-flow s3 priority=200,icmp,ip_dst=$EmergencyCenterIP,actions=normal
-ovs-ofctl add-flow s3 priority=100,icmp,ip_dst=$DataCenterIP,actions=normal
+ovs-ofctl add-flow s3 priority=200,icmp,ip_dst=$EmergencyCenterIP,actions=output:6
+ovs-ofctl add-flow s3 priority=100,icmp,ip_dst=$DataCenterIP,actions=output:5
 ovs-ofctl add-flow s3 priority=120,icmp,ip_dst=$Middlebox1,actions=output:2
 ovs-ofctl add-flow s3 priority=120,icmp,ip_dst=$Middlebox2,actions=output:4
 #Drop all other data
