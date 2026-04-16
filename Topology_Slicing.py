@@ -34,30 +34,31 @@ def CameraTopology():
         CameraAccessPoint2=net.addAccessPoint('Camera2AP', ssid='ssid-Camera2AP', channel='1', position='1010,5,0')
         CameraAccessPoint3=net.addAccessPoint('Camera3AP', ssid='ssid-Camera3AP', channel='1', position='10,1000,0')
         CameraAccessPoint4=net.addAccessPoint('Camera4AP', ssid='ssid-Camera4AP', channel='1', position='1010,1005,0')
-        #call remote so SDN controller works.  This example uses a dumb L2 switch for establishing a baseline.
-        #c1=net.addController('c1',controller=RemoteController,ip=ryu_ip,port=ryu_port)
+        #Create a controller.
         c1=net.addController('c1')
         ##Switches
+        #Add normal switches
         s1=net.addSwitch('s1')
         s2=net.addSwitch('s2')
         s3=net.addSwitch('s3')
         s4=net.addSwitch('s4')
         s5=net.addSwitch('s5')
-        s6=net.addSwitch('s6')
+        #Create network slicing "switches"
         Mid1HighBandwidthSwitch=net.addSwitch('s1HIGH')
         Mid1LowBandwidthSwitch=net.addSwitch('s1LOW')
         Mid2HighBandwidthSwitch=net.addSwitch('s2HIGH')
         Mid2LowBandwidthSwitch=net.addSwitch('s2LOW')
-        ###Use channel 2 overlaps with channel 1.
+        ###Use channel 2.  These overlap with the other access points.
+        #Name choice because of mininet limitations.
         EmergencyAP1=net.addAccessPoint('Emer1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
         EmergencyAP2=net.addAccessPoint('Emer2AP', ssid='ssid-Emergency2AP', channel='2', position='1000,500,0')
         EmergencyAP3=net.addAccessPoint('Emer3AP', ssid='ssid-Emergency3AP', channel='2', position='0,500,0')
         EmergencyAP4=net.addAccessPoint('Emer4AP', ssid='ssid-Emergency4AP', channel='2', position='500,1000,0')
-        #Add wire hosts
+        #Add Wire hosts
         EmergencyCenter=net.addHost('Emerctr',ip='10.0.5.0') #name is character limited
-        Middlebox1=net.addHost('Mid1',ip='10.0.4.1')
-        Middlebox2=net.addHost('Mid2',ip='10.0.4.2')
-        Datacenter=net.addHost('data',ip='10.0.6.0')
+        Middlebox1=net.addHost('Mid1',ip='10.0.4.1') #Middlebox 1
+        Middlebox2=net.addHost('Mid2',ip='10.0.4.2') #Middlebox 2
+        Datacenter=net.addHost('data',ip='10.0.6.0') #Datacenter. 
         #net.setPropagationModel(model='logDistance', exp=3)
 
         net.configureNodes()
@@ -105,12 +106,15 @@ def CameraTopology():
         net.addLink(EmergencyAP4,s2,port2=7,bw=2)
 
 
-
+        #plot wireless graphs.
         net.plotGraph(max_x=1050,max_y=1050)
-
+        #Build network.
+        info("Building network.\n")
         net.build()
+        #Start network controller.
+        info("Starting Network.\n")
         c1.start()
-
+        
         CameraAccessPoint1.start([c1])
         CameraAccessPoint2.start([c1])
         CameraAccessPoint3.start([c1])
