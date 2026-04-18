@@ -1,5 +1,5 @@
 import socket
-#import GUIBase
+import GUIBase
 import sys
 Arguments = sys.argv[1:]
 
@@ -74,6 +74,7 @@ def MiddleboxServer():
   # Breaking once connection closed
 def EmergencyLogic(Caller):
      print("MiddleboxEmergency")
+     return
      EmergenyCenterPort = 7777                
      EmergencyCenterIP="10.0.5.0"
      try:
@@ -105,6 +106,6 @@ def MiddleboxGUI():
      print("RAN")
 
      threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
-
+MiddleboxGUI()
 MiddleboxServer()
-#MiddleboxGUI()
+
