@@ -10,7 +10,8 @@ try:
         CameraSocket.connect((Localhost,MiddleboxPort))
         while True:
             CameraSocket.send('Send this string a bunch'.encode())
-            time.sleep(0.1)
+            #time.sleep(0.1)
+            #CameraSocket.recv(1024).decode()
 
 except socket.error as err:
     print(err)

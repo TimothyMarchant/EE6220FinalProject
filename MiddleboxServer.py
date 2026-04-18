@@ -1,5 +1,5 @@
 import socket
-import GUIBase
+#import GUIBase
 import sys
 Arguments = sys.argv[1:]
 
@@ -36,14 +36,15 @@ def CheckImage(Image):
 def CameraConnection(CameraSocket):
   try:
     with CameraSocket:
-            CameraSocket.send('Thank you for connecting'.encode()) 
+            #CameraSocket.send('Thank you for connecting'.encode()) 
             while True:
-                  print()
+             #     print()
                   #Receive data indefinitely. 
-                  data=CameraSocket.recv(1024).Decode()
+                  data=CameraSocket.recv(1024).decode()
+                  CameraSocket.send('a'.encode())
 
-  except:
-     print("Error")
+  except Exception as e:
+     print(e)
 
 #ListeningSocket = socket.socket()         
 #print ("Socket successfully created")
@@ -68,6 +69,7 @@ def MiddleboxServer():
 
                   threading.Thread(target=CameraConnection, args=(client,)).start()
  except:
+     print("Base error")
      print("Error")
   # Breaking once connection closed
 def EmergencyLogic(Caller):
@@ -102,7 +104,7 @@ def MiddleboxGUI():
      GUI=GUIBase.Middlebox_GUI(Title,Camera1,Camera2,EmergencyLogic,EmergencyLogic)
      print("RAN")
 
-     threading.Thread(target=GUI.RunGUI,args=()).start()
+     threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
 
 MiddleboxServer()
 #MiddleboxGUI()
