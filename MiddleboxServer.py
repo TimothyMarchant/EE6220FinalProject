@@ -69,9 +69,9 @@ def MiddleboxServer():
                   AddressString=str(addr).split('.')
 
                   threading.Thread(target=CameraConnection, args=(client,)).start()
- except:
-     print("Base error")
-     print("Error")
+ except Exception as e:
+     print(e)
+
   # Breaking once connection closed
 def EmergencyLogic(Caller):
      print("MiddleboxEmergency")
@@ -81,7 +81,6 @@ def EmergencyLogic(Caller):
      try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as EmergencySocket:
           EmergencySocket.connect((EmergencyCenterIP,EmergenyCenterPort))      
-          print("RAN")    
           while True:
             
             EmergencyString='Accident detected at '+(Caller)
@@ -106,9 +105,7 @@ def MiddleboxGUI():
      Title=Arguments[0]
      Camera1=Arguments[1]
      Camera2=Arguments[2]
-     print("RAN")
      GUI=GUIBase.Middlebox_GUI(Title,Camera1,Camera2,EmergencyLogic,EmergencyLogic)
-     print("RAN")
 
      threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
 def SendDataToDataCenter():

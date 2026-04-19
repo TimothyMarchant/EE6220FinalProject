@@ -72,8 +72,8 @@ ovs-ofctl add-flow $HighBandWidth1 priority=100,actions=normal
 ovs-ofctl add-flow $LowBandWidth1 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=normal
 ovs-ofctl add-flow $LowBandWidth1 priority=100,actions=normal
 #For testing purposes define rules for ICMP
-ovs-ofctl add-flow s1 priority=50,icmp,ip_dst=$EmergencyCenterIP,actions=output:$LowBandWidthPort
-ovs-ofctl add-flow s1 priority=50,ip,ip_dst=$EmergencyCenterIP,actions=output:$LowBandWidthPort
+ovs-ofctl add-flow s1 priority=50,icmp,ip_dst=$EmergencyCenterIP,actions=output:$HighBandWidthPort
+ovs-ofctl add-flow s1 priority=50,ip,ip_dst=$EmergencyCenterIP,actions=output:$HighBandWidthPort
 ovs-ofctl add-flow s1 priority=50,icmp,ip_dst=$DataCenterIP,actions=output:$LowBandWidthPort
 ovs-ofctl add-flow s1 priority=50,ip,ip_dst=$DataCenterIP,actions=output:$LowBandWidthPort
 #Emergency AP
