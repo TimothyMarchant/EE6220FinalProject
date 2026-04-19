@@ -93,6 +93,9 @@ def EmergencyLogic(Caller):
             elif (Response == 'NonAccident'):
                 print("Nonaccident confirmed")
                 break
+            else:
+                print("Message not received correctly")
+                break
 
 
 
