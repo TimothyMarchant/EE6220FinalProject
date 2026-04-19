@@ -33,11 +33,11 @@ ImageServerPort=7777
 TextDataPort=80
 
 #s1 definitions.
-ovs-ofctl add-flow s2 priority=500,ip,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s2 priority=500,icmp,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
+#ovs-ofctl add-flow s2 priority=500,ip,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
+#ovs-ofctl add-flow s2 priority=500,icmp,nw_src=$Camera1IPRange,actions=output:$MiddleboxPort
 
-ovs-ofctl add-flow s2 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera1IPRange,actions=normal
-ovs-ofctl add-flow s2 priority=500,in_port=$MiddleboxPort,icmp,nw_dst=$Camera1IPRange,actions=normal
+#ovs-ofctl add-flow s2 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera1IPRange,actions=normal
+#ovs-ofctl add-flow s2 priority=500,in_port=$MiddleboxPort,icmp,nw_dst=$Camera1IPRange,actions=normal
 
 ovs-ofctl add-flow s2 priority=500,ip,nw_src=$Camera3,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s2 priority=500,in_port=$MiddleboxPort,ip,nw_dst=$Camera3,actions=normal

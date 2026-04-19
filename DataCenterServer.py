@@ -29,9 +29,11 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
      print(e)
 #Create server thread
 def DataCenterServer():
+ global DataCenterIP
+ global DataCenterPort
  try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
-            ListeningSocket.bind(('', DataCenterPort))         
+            ListeningSocket.bind((DataCenterIP, DataCenterPort))         
             print ("socket binded to %s" %(DataCenterPort)) 
             ListeningSocket.listen()     
             print ("socket is listening")  

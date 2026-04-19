@@ -1,9 +1,10 @@
 import socket
 import GUIBase
+import time
 import sys
 Arguments = sys.argv[1:]
 
-if (len(Arguments)!=3):
+if (len(Arguments)!=4):
    print("Incorrect number of arguments")
    exit()
 
@@ -14,7 +15,7 @@ import threading
 Localhost="127.0.0.1"
 Middlebox1IP="10.0.4.1"
 Middlebox2IP="10.0.4.2"
-
+IP=Arguments[-1]
 #portnumber 
 
 MiddleboxPort = 9999
@@ -53,9 +54,11 @@ def CameraConnection(CameraSocket):
 
 #Create server thread
 def MiddleboxServer():
+ global IP
+ print(IP)
  try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
-            ListeningSocket.bind(('', MiddleboxPort))         
+            ListeningSocket.bind((IP, MiddleboxPort))         
             print ("socket binded to %s" %(MiddleboxPort)) 
             ListeningSocket.listen()     
             print ("socket is listening")  
@@ -73,8 +76,8 @@ def MiddleboxServer():
 def EmergencyLogic(Caller):
      print("MiddleboxEmergency")
      EmergenyCenterPort = 7777                
-     #EmergencyCenterIP="10.0.5.0"
-     EmergencyCenterIP=Localhost
+     EmergencyCenterIP="10.0.5.0"
+     #EmergencyCenterIP=Localhost
      try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as EmergencySocket:
           EmergencySocket.connect((EmergencyCenterIP,EmergenyCenterPort))      
@@ -114,15 +117,14 @@ def SendDataToDataCenter():
 
     try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as DataCenterSocket:
-        DataCenterSocket.connect((Localhost,MiddleboxPort))
+        DataCenterSocket.connect((DataCenterIP,DataCenterPort))
         while True:
             DataCenterSocket.send('Send this string a bunch'.encode())
+            time.sleep(0.01)
 
     except:
       exit()
-#threading.Thread(target=SendDataToDataCenter,args=(),daemon=True).start()
+threading.Thread(target=SendDataToDataCenter,args=(),daemon=True).start()
 MiddleboxGUI()
-while True:
-  pass
-#MiddleboxServer()
+MiddleboxServer()
 

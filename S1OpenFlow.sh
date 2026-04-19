@@ -52,8 +52,8 @@ ovs-ofctl add-flow s1 priority=1200,arp,nw_src=$Camera2,actions=output:$Middlebo
 ovs-ofctl add-flow s1 priority=1200,in_port=$MiddleboxPort,arp,nw_dst=$Camera2,actions=normal
 
 #Port to middlebox from network slicing.
-ovs-ofctl add-flow s1 priority=100,in_port=$HighBandWidthPort,actions=output:$MiddleboxPort
-ovs-ofctl add-flow s1 priority=100,in_port=$LowBandWidthPort,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=300,in_port=$HighBandWidthPort,actions=output:$MiddleboxPort
+ovs-ofctl add-flow s1 priority=400,in_port=$LowBandWidthPort,actions=output:$MiddleboxPort
 #Traffic that should never be accepted (shouldn't happen).
 ovs-ofctl add-flow s1 priority=600,ip,ip_dst=$Middlebox2,actions=drop
 ovs-ofctl add-flow s1 priority=600,ip,ip_dst=$Middlebox2,actions=drop

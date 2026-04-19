@@ -1,16 +1,20 @@
 import socket
 import time
 import sys
-
+IpAddress=sys.argv[1]
+if (len(sys.argv)!=2):
+   exit()
 MiddleboxIP = "10.0.4.1"
 Localhost="127.0.0.1"
 MiddleboxPort = 9999
 try:
+    
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as CameraSocket:
-        CameraSocket.connect((Localhost,MiddleboxPort))
+        CameraSocket.connect((IpAddress,MiddleboxPort))
+        print("Connected")
         while True:
             CameraSocket.send('Send this string a bunch'.encode())
-            #time.sleep(0.1)
+            time.sleep(0.01)
             #CameraSocket.recv(1024).decode()
 
 except socket.error as err:

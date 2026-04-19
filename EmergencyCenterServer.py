@@ -10,7 +10,8 @@ DataCenterPort=7777
 DataCenterIP = "10.0.6.0"
 Flag1=0
 Flag2=0
-
+MayMarkEmergency1=False
+MayMarkEmergency2=False
 Middlebox1Emergency=False
 Middlebox2Emergency=False
 
@@ -36,6 +37,14 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
   global Middlebox2Emergency
   global Flag1
   global Flag2
+  global MayMarkEmergency1
+  global MayMarkEmergency2
+  if (BoxNumber==1):
+     MayMarkEmergency1=True
+     print("Marked 1")
+  else:
+     MayMarkEmergency2=True
+     print("Marked 2")
   print(BoxNumber)
   try:
     with MiddleboxSocket:
@@ -45,16 +54,28 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
                   #Receive data indefinitely. 
                   data=MiddleboxSocket.recv(1024).decode()
                   print(data)
-                  while (Middlebox1Emergency ==False and Middlebox2Emergency == False):
-                     pass
+                  if (BoxNumber==1):
+                    while (Middlebox1Emergency == False):
+                      pass
+                  elif (BoxNumber==2):
+                    while (Middlebox2Emergency == False):
+                      pass
+                  
+                  
+                  
                   if (BoxNumber==1 and Middlebox1Emergency):
                       RespondToMiddleBox(MiddleboxSocket,Flag1)
                       Flag1=0
                       Middlebox1Emergency=False
+                      MayMarkEmergency1=False
+                      print("Middlebox1 emergency")
                       break
-                  if (BoxNumber==2 and Middlebox2Emergency):
+                  elif (BoxNumber==2 and Middlebox2Emergency):
                       RespondToMiddleBox(MiddleboxSocket,Flag2)
                       Flag2=0
+                      Middlebox2Emergency=False
+                      MayMarkEmergency2=False
+                      print("Middlebox2 emergency")
                       break
 
                       
@@ -69,7 +90,7 @@ def EmergencyCenterServer():
  print(boxnumber)
  try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
-            ListeningSocket.bind(('', EmercenyCenterPort))         
+            ListeningSocket.bind((EmergencyCenterIP, EmercenyCenterPort))         
             print ("socket binded to %s" %(EmercenyCenterPort)) 
             ListeningSocket.listen()     
             print ("socket is listening")  
@@ -78,21 +99,21 @@ def EmergencyCenterServer():
                 #Establish connection with middlebox
                   client, addr = ListeningSocket.accept()
                   print(addr)
-                  AddressString=str(addr).split('.')
-                  
+                  AddressString=str(addr[0]).split('.')
+                  #print(AddressString[-1])
                   if (AddressString[-1]=="1"):
                       boxnumber=1
                   elif(AddressString[-1]=="2"):
                       boxnumber=2
-                  if(AddressString[2]!="0"):
+                  if(AddressString[2]!="4"):
                       pass
                   else:
                     print(boxnumber)
                     threading.Thread(target=HandleMiddlebox, args=(client,boxnumber,),daemon=True).start()
                     
- except:
-     print("Base error")
-     print("Error")
+ except Exception as e:
+     print(e)
+     
   # Breaking once connection closed
 
 def EmergencyResponse(Caller):
@@ -100,15 +121,17 @@ def EmergencyResponse(Caller):
     global Flag2
     global Middlebox1Emergency
     global Middlebox2Emergency
+    global MayMarkEmergency1
+    global MayMarkEmergency2
     EmergencyString1='Emergency 1'
     EmergencyString2='Emergency 2'
     EmergencyString3='Emergency 3'
     EmergencyString4='Emergency 4'
-    if (Caller==EmergencyString1 or Caller==EmergencyString2):
+    if ((Caller==EmergencyString1 or Caller==EmergencyString2) and MayMarkEmergency1):
         print("Emergency")
         Middlebox1Emergency=True
         Flag1=1
-    if (Caller==EmergencyString3 or Caller==EmergencyString4):
+    if ((Caller==EmergencyString3 or Caller==EmergencyString4) and MayMarkEmergency2):
         Middlebox2Emergency=True
         Flag2=1
     
@@ -118,14 +141,16 @@ def NonEmergencyResponse(Caller):
     global Flag2
     global Middlebox1Emergency
     global Middlebox2Emergency
+    global MayMarkEmergency1
+    global MayMarkEmergency2
     EmergencyString1='Emergency 1'
     EmergencyString2='Emergency 2'
     EmergencyString3='Emergency 3'
     EmergencyString4='Emergency 4'
-    if (Caller==EmergencyString1 or Caller==EmergencyString2):
+    if ((Caller==EmergencyString1 or Caller==EmergencyString2) and MayMarkEmergency1):
         Middlebox1Emergency=True
         Flag1=0
-    if (Caller==EmergencyString3 or Caller==EmergencyString4):
+    if ((Caller==EmergencyString3 or Caller==EmergencyString4) and MayMarkEmergency2):
         Middlebox2Emergency=True
         Flag2=0
 
