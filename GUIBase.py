@@ -50,6 +50,72 @@ class Middlebox_GUI:
 
 
         window.close()
+class EmergencyCenterGUI:
+    def defaultfunction(args):
+        print()
+    Title = 'Emergency Center'
+    Middlebox1 = 'Middlebox 1'
+    Middlebox2 = 'Middlebox 2'
+    Camera1='Camera 1'
+    Camera2='Camera 2'
+    Camera3='Camera 3'
+    Camera4='Camera 4'
+    EmergencyString1='Emergency 1'
+    EmergencyString2='Emergency 2'
+    EmergencyString3='Emergency 3'
+    EmergencyString4='Emergency 4'
+
+    EmergencyResponseFunction=defaultfunction
+
+
+    def __init__(self,EmergencyFunction):
+        self.EmergencyResponseFunction=EmergencyFunction
+
+        pass
+    def RunGUI(self):
+        FirstCamera = [
+        [sg.Text(self.Camera1)],
+        [sg.Button(self.EmergencyString1), sg.Button('Not Emergency 1')]
+
+        ]
+        SecondCamera = [
+        [sg.Text(self.Camera2)],
+        [sg.Button(self.EmergencyString2), sg.Button('Not Emergency 2')]
+        ]
+        ThirdCamera = [
+        [sg.Text(self.Camera3)],
+        [sg.Button(self.EmergencyString3), sg.Button('Not Emergency 3')]
+
+        ]
+        FourthCamera = [
+        [sg.Text(self.Camera4)],
+        [sg.Button(self.EmergencyString4), sg.Button('Not Emergency 4')]
+        ]
+        Exit = [
+        [sg.Button('Exit')]
+        ]
+
+        window=sg.Window(title=self.Title, layout=[FirstCamera,SecondCamera,ThirdCamera,FourthCamera,Exit], margins=(144,144))
+        print(window)
+        while True:
+            event, values = window.read()
+
+            if event == sg.WIN_CLOSED or event == 'Exit':
+                break
+            if event == self.EmergencyString1:
+                self.EmergencyFunction(self.EmergencyString1)
+            if event == self.EmergencyString2:
+                self.EmergencyFunction(self.EmergencyString2)
+            if event == self.EmergencyString3:
+                self.EmergencyFunction(self.EmergencyString3)
+            if event == self.EmergencyString4:
+                self.EmergencyFunction(self.EmergencyString4)    
+            if event == 'Not Emergency 1' or event == 'Not Emergency 2':
+                print("No Emergency")
+
+
+        window.close()
+
 
 #GUI=Middlebox_GUI('Middlebox 1','Camera1','Camera2')
 #GUI.RunGUI()

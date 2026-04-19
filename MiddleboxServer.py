@@ -11,6 +11,9 @@ if (len(Arguments)!=3):
 import threading         
 
 # next create a socket object 
+Localhost="127.0.0.1"
+Middlebox1IP="10.0.4.1"
+Middlebox2IP="10.0.4.2"
 
 #portnumber 
 
@@ -46,8 +49,6 @@ def CameraConnection(CameraSocket):
   except Exception as e:
      print(e)
 
-#ListeningSocket = socket.socket()         
-#print ("Socket successfully created")
 
 
 #Create server thread
@@ -60,9 +61,6 @@ def MiddleboxServer():
             print ("socket is listening")  
 
             while True: 
-
-# Establish connection with client. 
-            #print()
                   client, addr = ListeningSocket.accept()
                   print(addr)
                   AddressString=str(addr).split('.')
@@ -74,9 +72,9 @@ def MiddleboxServer():
   # Breaking once connection closed
 def EmergencyLogic(Caller):
      print("MiddleboxEmergency")
-     return
      EmergenyCenterPort = 7777                
-     EmergencyCenterIP="10.0.5.0"
+     #EmergencyCenterIP="10.0.5.0"
+     EmergencyCenterIP=Localhost
      try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as EmergencySocket:
           while True:
@@ -86,8 +84,9 @@ def EmergencyLogic(Caller):
             Response=EmergencySocket.recv(1024).decode
             print(Response)
             if (Response == 'Accident'):
-                pass
+                print("Accident Confirmed")
             elif (Response == 'NonAccident'):
+                print("Nonaccident")
                 break
 
 
@@ -106,6 +105,19 @@ def MiddleboxGUI():
      print("RAN")
 
      threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
+def SendDataToDataCenter():
+    global DataCenterIP
+    global DataCenterPort
+
+    try:
+      with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as DataCenterSocket:
+        DataCenterSocket.connect((Localhost,MiddleboxPort))
+        while True:
+            DataCenterSocket.send('Send this string a bunch'.encode())
+
+    except:
+      exit()
+threading.Thread(target=SendDataToDataCenter,args=(),daemon=True).start()
 MiddleboxGUI()
 MiddleboxServer()
 
