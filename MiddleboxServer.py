@@ -77,22 +77,25 @@ def EmergencyLogic(Caller):
      EmergencyCenterIP=Localhost
      try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as EmergencySocket:
+          EmergencySocket.connect((EmergencyCenterIP,EmergenyCenterPort))      
+          print("RAN")    
           while True:
-            EmergencySocket.connect((EmergencyCenterIP,EmergenyCenterPort))
+            
             EmergencyString='Accident detected at '+(Caller)
             EmergencySocket.send(EmergencyString.encode())
-            Response=EmergencySocket.recv(1024).decode
-            print(Response)
+            Response=EmergencySocket.recv(1024).decode()
+            #print(Response)
             if (Response == 'Accident'):
                 print("Accident Confirmed")
+                break
             elif (Response == 'NonAccident'):
-                print("Nonaccident")
+                print("Nonaccident confirmed")
                 break
 
 
 
-     except:
-         print("error")
+     except Exception as e:
+         print(e)
 
           
 def MiddleboxGUI():
@@ -117,7 +120,9 @@ def SendDataToDataCenter():
 
     except:
       exit()
-threading.Thread(target=SendDataToDataCenter,args=(),daemon=True).start()
+#threading.Thread(target=SendDataToDataCenter,args=(),daemon=True).start()
 MiddleboxGUI()
-MiddleboxServer()
+while True:
+  pass
+#MiddleboxServer()
 

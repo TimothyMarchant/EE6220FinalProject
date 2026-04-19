@@ -23,10 +23,10 @@ def RespondToMiddleBox(MiddleboxSocket,IsAccident):
     global Flag1
     global Flag2
     if (IsAccident):
-        MiddleboxSocket.send('Accident')
+        MiddleboxSocket.send('Accident'.encode())
         return True
     else:
-        MiddleboxSocket.send('NonAccident')
+        MiddleboxSocket.send('NonAccident'.encode())
         return True
     return False
 
@@ -36,6 +36,7 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
   global Middlebox2Emergency
   global Flag1
   global Flag2
+  print(BoxNumber)
   try:
     with MiddleboxSocket:
             #CameraSocket.send('Thank you for connecting'.encode()) 
@@ -44,9 +45,12 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
                   #Receive data indefinitely. 
                   data=MiddleboxSocket.recv(1024).decode()
                   print(data)
+                  while (Middlebox1Emergency ==False and Middlebox2Emergency == False):
+                     pass
                   if (BoxNumber==1 and Middlebox1Emergency):
                       RespondToMiddleBox(MiddleboxSocket,Flag1)
                       Flag1=0
+                      Middlebox1Emergency=False
                       break
                   if (BoxNumber==2 and Middlebox2Emergency):
                       RespondToMiddleBox(MiddleboxSocket,Flag2)
@@ -61,6 +65,8 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
 def EmergencyCenterServer():
  global EmergencyCenterIP
  global EmercenyCenterPort
+ boxnumber=1
+ print(boxnumber)
  try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
             ListeningSocket.bind(('', EmercenyCenterPort))         
@@ -73,15 +79,17 @@ def EmergencyCenterServer():
                   client, addr = ListeningSocket.accept()
                   print(addr)
                   AddressString=str(addr).split('.')
-                  boxnumber=1
+                  
                   if (AddressString[-1]=="1"):
                       boxnumber=1
                   elif(AddressString[-1]=="2"):
                       boxnumber=2
-                  elif(AddressString[2]!="4"):
+                  if(AddressString[2]!="0"):
                       pass
                   else:
-                    threading.Thread(target=HandleMiddlebox, args=(client,boxnumber)).start()
+                    print(boxnumber)
+                    threading.Thread(target=HandleMiddlebox, args=(client,boxnumber,),daemon=True).start()
+                    
  except:
      print("Base error")
      print("Error")
@@ -97,6 +105,7 @@ def EmergencyResponse(Caller):
     EmergencyString3='Emergency 3'
     EmergencyString4='Emergency 4'
     if (Caller==EmergencyString1 or Caller==EmergencyString2):
+        print("Emergency")
         Middlebox1Emergency=True
         Flag1=1
     if (Caller==EmergencyString3 or Caller==EmergencyString4):
@@ -122,14 +131,10 @@ def NonEmergencyResponse(Caller):
 
           
 def EmergencyGUI():
-     global Arguments
-     Title=Arguments[0]
-     Camera1=Arguments[1]
-     Camera2=Arguments[2]
      print("RAN")
-     GUI=GUIBase.EmergencyCenterGUI(EmergencyResponse)
+     GUI=GUIBase.EmergencyCenterGUI(EmergencyResponse,NonEmergencyResponse)
      print("RAN")
 
      threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
 EmergencyGUI()
-EmergencyCenterServer()
+threading.Thread(target=EmergencyCenterServer,args=(),daemon=False).start()

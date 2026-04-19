@@ -66,10 +66,11 @@ class EmergencyCenterGUI:
     EmergencyString4='Emergency 4'
 
     EmergencyResponseFunction=defaultfunction
+    NonemergencyResponseFunction=defaultfunction
 
-
-    def __init__(self,EmergencyFunction):
+    def __init__(self,EmergencyFunction,NonEmergencyFunction):
         self.EmergencyResponseFunction=EmergencyFunction
+        self.NonemergencyResponseFunction=NonEmergencyFunction
 
         pass
     def RunGUI(self):
@@ -103,15 +104,19 @@ class EmergencyCenterGUI:
             if event == sg.WIN_CLOSED or event == 'Exit':
                 break
             if event == self.EmergencyString1:
-                self.EmergencyFunction(self.EmergencyString1)
+                self.EmergencyResponseFunction(self.EmergencyString1)
             if event == self.EmergencyString2:
-                self.EmergencyFunction(self.EmergencyString2)
+                self.EmergencyResponseFunction(self.EmergencyString2)
             if event == self.EmergencyString3:
-                self.EmergencyFunction(self.EmergencyString3)
+                self.EmergencyResponseFunction(self.EmergencyString3)
             if event == self.EmergencyString4:
-                self.EmergencyFunction(self.EmergencyString4)    
+                self.EmergencyResponseFunction(self.EmergencyString4)    
             if event == 'Not Emergency 1' or event == 'Not Emergency 2':
                 print("No Emergency")
+                self.NonemergencyResponseFunction(self.EmergencyString1)
+            if event == 'Not Emergency 3' or event == 'Not Emergency 4':
+                print("No Emergency")
+                self.NonemergencyResponseFunction(self.EmergencyString3)
 
 
         window.close()
