@@ -43,11 +43,6 @@ def CameraTopology():
         s3=net.addSwitch('s3')
         s4=net.addSwitch('s4')
         s5=net.addSwitch('s5')
-        #Create network slicing "switches"
-        Mid1HighBandwidthSwitch=net.addSwitch('s1HIGH')
-        Mid1LowBandwidthSwitch=net.addSwitch('s1LOW')
-        Mid2HighBandwidthSwitch=net.addSwitch('s2HIGH')
-        Mid2LowBandwidthSwitch=net.addSwitch('s2LOW')
         ###Use channel 2.  These overlap with the other access points.
         #Name choice because of mininet limitations.
         EmergencyAP1=net.addAccessPoint('Emer1AP', ssid='ssid-Emergency1AP', channel='2', position='500,5,0')
@@ -79,18 +74,6 @@ def CameraTopology():
         #switch connections
         #Network slicing.  Send image data over larger bandwidth, send smaller data over the other link.
         #Middlebox 1
-        net.addLink(s1,Mid1HighBandwidthSwitch,port1=4,port2=1,bw=50)
-        net.addLink(s1,Mid1LowBandwidthSwitch,port1=5,port2=1,bw=2)
-        #Middlebox 2
-        net.addLink(s2,Mid2HighBandwidthSwitch,port1=4,port2=1,bw=50)
-        net.addLink(s2,Mid2LowBandwidthSwitch,port1=5,port2=1,bw=2)
-        #Connect to switch 3 which connects the entire network.
-        #connect S1
-        net.addLink(Mid1HighBandwidthSwitch,s3,port1=2,port2=1,bw=50)
-        net.addLink(Mid1LowBandwidthSwitch,s3,port1=2,port2=2,bw=2)
-        #Connect S2
-        net.addLink(Mid2HighBandwidthSwitch,s3,port1=2,port2=3,bw=50)
-        net.addLink(Mid2LowBandwidthSwitch,s3,port1=2,port2=4,bw=2)
         #make remaining switch connections
         #Connect S4
         net.addLink(s3,s4,port1=5,port2=1,bw=75)
