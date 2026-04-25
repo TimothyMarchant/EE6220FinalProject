@@ -35,7 +35,6 @@ class Middlebox_GUI:
         ]
 
         window=sg.Window(title=self.Title, layout=[LeftColumn,RightColumn,Exit], margins=(144,144))
-        print(window)
         while True:
             event, values = window.read()
 
@@ -97,7 +96,6 @@ class EmergencyCenterGUI:
         ]
 
         window=sg.Window(title=self.Title, layout=[FirstCamera,SecondCamera,ThirdCamera,FourthCamera,Exit], margins=(144,144))
-        print(window)
         while True:
             event, values = window.read()
 
@@ -121,6 +119,52 @@ class EmergencyCenterGUI:
 
         window.close()
 
+
+class EmergencyGUI:
+    def defaultfunction(args):
+        print()
+
+
+    Title = 'Emergency'
+    Caller = 'Caller'
+    EmergencyString = "Accept Emergency"
+    NotEmergencyString = "Refuse Request"
+    EmergencyResponseFunction=defaultfunction
+    NonemergencyResponseFunction=defaultfunction
+
+    def __init__(self,EmergencyFunction,NonEmergencyFunction,Title,Caller,EmergencyString):
+
+        self.EmergencyResponseFunction=EmergencyFunction
+        self.NonemergencyResponseFunction=NonEmergencyFunction
+        self.Title=Title
+        self.Caller=Caller
+        self.EmergencyString=EmergencyString
+
+
+    def RunGUI(self):
+        MainText = [
+        [sg.Text(self.Title), sg.Text("Called by: "+self.Caller)],
+        [sg.Button(self.EmergencyString), sg.Button(self.NotEmergencyString)]
+        ]
+        Exit = [
+        [sg.Button('Exit')]
+        ]
+
+        window=sg.Window(title=self.Title, layout=[MainText,Exit], margins = (80,80))
+        while True:
+            event, values = window.read()
+
+            if event == sg.WIN_CLOSED or event == 'Exit':
+                break
+            if event == self.EmergencyString:
+                self.EmergencyResponseFunction(self.EmergencyString)
+                break
+            if event == self.NotEmergencyString:
+                self.NonemergencyResponseFunction(self.EmergencyString)
+                break
+
+
+        window.close()
 
 #GUI=Middlebox_GUI('Middlebox 1','Camera1','Camera2')
 #GUI.RunGUI()
