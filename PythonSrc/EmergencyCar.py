@@ -84,6 +84,7 @@ def EmergencyCarClient():
             
             
                     MiddleboxQuestion = MiddleboxSocket.recv(1024).decode()
+                    print("RAN")
                     Caller=MiddleboxQuestion.split(':')[-1]
                     EmergencyGUI(Caller,MiddleboxQuestion)
                     while (MiddleboxEmergency==False):

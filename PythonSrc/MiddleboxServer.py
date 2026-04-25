@@ -93,6 +93,7 @@ def MiddleboxServer():
                   print(addr)
                   AddressString=str(addr).split('.')
                   if (AddressString[1]!=0):
+                      print("IP:"+str(addr))
                       threading.Thread(target=HandleEmergencyCar, args=(), daemon=True)
                       EmergencyCarsCount += 1
                   else:
@@ -132,7 +133,7 @@ def CallEmergencyCenter(Caller):
 
 
 
-         
+
      EmergencyAvailable=False
     
 
