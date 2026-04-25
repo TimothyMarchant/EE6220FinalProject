@@ -18,8 +18,10 @@ DataCenterIP = "10.0.6.0"
 Flag=0
 MiddleboxEmergency=False
 
-
-
+Middlebox1IP = "10.0.4.1"
+Middlebox2IP = "10.0.4.2"
+MiddleboxPort = 9999
+MiddleboxIPs = [Middlebox1IP, Middlebox2IP]
 
 EmergencyCarIP = Arguments[0]
 
@@ -66,34 +68,36 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
 
 
 #Create server thread
-def EmergencyCarServer():
+def EmergencyCarClient():
  global EmergencyCarIP
  global EmercenyCarPort
+ global MiddleboxPort
  boxnumber = 1
- try:
-      with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
-            ListeningSocket.bind((EmergencyCarIP, EmercenyCarPort))         
-            print ("socket binded to %s" %(EmercenyCarPort)) 
-            ListeningSocket.listen()     
-            print ("socket is listening")  
+ response="defaultmsg" #Should never get send like this
 
-            while True: 
-                #Establish connection with middlebox
-                  client, addr = ListeningSocket.accept()
-                  print(addr)
-                  AddressString=str(addr[0]).split('.')
+ while True:
+    try:
+        for i in MiddleboxIPs:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as MiddleboxSocket:
+                MiddleboxSocket.connect((i,MiddleboxPort))      
+                while True:
+            
+            
+                    MiddleboxQuestion = MiddleboxSocket.recv(1024).decode()
+                    Caller=MiddleboxQuestion.split(':')[-1]
+                    EmergencyGUI(Caller,MiddleboxQuestion)
+                    while (MiddleboxEmergency==False):
+                        pass
+                    if (Flag == 1):
+                        response="Accept"
+                    else:
+                        response="Refuse"
+                    #Send response
+                    MiddleboxSocket.send(response.encode())
 
 
-                  if (AddressString[-1]=="1"):
-                      boxnumber=1
-                  elif(AddressString[-1]=="2"):
-                      boxnumber=2
-                  if(AddressString[2]!="4"):
-                      pass
-                  else:
-                    threading.Thread(target=HandleMiddlebox, args=(client,boxnumber,),daemon=True).start()
                     
- except Exception as e:
+    except Exception as e:
      print(e)
      
   # Breaking once connection closed
@@ -119,4 +123,4 @@ def EmergencyGUI(Caller,AccidentText):
      threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
 
 
-EmergencyCarServer()
+EmergencyCarClient()

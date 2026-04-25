@@ -2,6 +2,8 @@ import socket
 import GUIBase
 import time
 import sys
+import threading         
+
 Arguments = sys.argv[1:]
 
 if (len(Arguments)!=4):
@@ -9,7 +11,6 @@ if (len(Arguments)!=4):
    exit()
 
 # first of all import the socket library 
-import threading         
 
 # next create a socket object 
 Localhost="127.0.0.1"
@@ -26,17 +27,17 @@ EmergencyCenterIP="10.0.5.0"
 DataCenterPort=7777
 DataCenterIP = "10.0.6.0"
 
-# Next bind to the port 
-# we have not typed any ip in the ip field 
-# instead we have inputted an empty string 
-# this makes the server listen to requests 
-# coming from other computers on the network 
-          
+##
+EmergencyCarIPRange="10.1.0.0/16"
+EmergencyCarsCount = 0
+CarAvailable = False
+EmergencyAvailable = False
 
-# a forever loop until we interrupt it or 
-# an error occurs
-def CheckImage(Image):
-   print(Image)
+EmergencyCaller=""
+
+          
+EmergencyText = ""
+
 def CameraConnection(CameraSocket):
   try:
     with CameraSocket:
@@ -45,17 +46,41 @@ def CameraConnection(CameraSocket):
              #     print()
                   #Receive data indefinitely. 
                   data=CameraSocket.recv(1024).decode()
-                  CameraSocket.send('a'.encode())
+                  CameraSocket.send(data.encode())
 
   except Exception as e:
      print(e)
 
+def HandleEmergencyCar(CarSocket):
+    global EmergencyAvailable
+    global EmergencyCaller
+    global EmergencyCarsCount
+    try:
+        with CarSocket:
+            
+            while True:
+                if (EmergencyAvailable==True):
+                    temp="Accident detected at:"+EmergencyCaller
+                    CarSocket.send(temp.encode())
+                    response = CarSocket.recv(1024).decode()
+                    if (response == "Refuse"):
+                        CallEmergencyCenter(EmergencyCaller)
+                    else:
+                        EmergencyAvailable = False
 
+    except Exception as e:
+        
+        print(e)
+    finally:
+        EmergencyCarsCount-=1
+        #should never happen
+        if (EmergencyCarsCount<0):
+            EmergencyCarsCount = 0
 
 #Create server thread
 def MiddleboxServer():
+ global EmergencyCarsCount
  global IP
- print(IP)
  try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
             ListeningSocket.bind((IP, MiddleboxPort))         
@@ -67,14 +92,17 @@ def MiddleboxServer():
                   client, addr = ListeningSocket.accept()
                   print(addr)
                   AddressString=str(addr).split('.')
-
-                  threading.Thread(target=CameraConnection, args=(client,)).start()
+                  if (AddressString[1]!=0):
+                      threading.Thread(target=HandleEmergencyCar, args=(), daemon=True)
+                      EmergencyCarsCount += 1
+                  else:
+                    threading.Thread(target=CameraConnection, args=(client,),daemon=True).start()
  except Exception as e:
      print(e)
 
   # Breaking once connection closed
-def EmergencyLogic(Caller):
-     print("MiddleboxEmergency")
+def CallEmergencyCenter(Caller):
+     global EmergencyAvailable
      EmergenyCenterPort = 7777                
      EmergencyCenterIP="10.0.5.0"
      #EmergencyCenterIP=Localhost
@@ -102,6 +130,29 @@ def EmergencyLogic(Caller):
      except Exception as e:
          print(e)
 
+
+
+         
+     EmergencyAvailable=False
+    
+
+
+def EmergencyLogic(Caller):
+  global EmergencyCaller
+  global EmergencyAvailable
+  EmergencyCaller=Caller
+  EmergencyAvailable = True
+
+
+def Main():
+    global EmergencyCarsCount
+    global EmergencyAvailable
+    global EmergencyCaller
+    while True:
+        if (EmergencyAvailable and EmergencyCarsCount <=0):
+            CallEmergencyCenter(EmergencyCaller)
+            
+
           
 def MiddleboxGUI():
      global Arguments
@@ -126,5 +177,5 @@ def SendDataToDataCenter():
       exit()
 threading.Thread(target=SendDataToDataCenter,args=(),daemon=True).start()
 MiddleboxGUI()
-MiddleboxServer()
-
+threading.Thread(target=MiddleboxServer,args=(),daemon=True).start()
+Main()
