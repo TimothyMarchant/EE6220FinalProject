@@ -60,6 +60,7 @@ def HandleEmergencyCar(CarSocket):
             
             while True:
                 if (EmergencyAvailable==True):
+                    print("Emergency")
                     temp="Accident detected at:"+EmergencyCaller
                     CarSocket.send(temp.encode())
                     response = CarSocket.recv(1024).decode()
