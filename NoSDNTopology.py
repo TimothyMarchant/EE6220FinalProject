@@ -55,7 +55,7 @@ def CameraTopology():
         Middlebox2=net.addHost('Mid2',ip='10.0.4.2') #Middlebox 2
         Datacenter=net.addHost('data',ip='10.0.6.0') #Datacenter.
         #
-        EmergencyCar1=net.addStation('EmerCar1', ip='12.0.0.1',position='500,25,0')
+        EmergencyCar1=net.addStation('EmerCar1', ip='10.1.0.1',position='500,25,0')
         #net.setPropagationModel(model='logDistance', exp=3)
 
         net.configureNodes()
@@ -72,8 +72,9 @@ def CameraTopology():
         net.addLink(CameraAccessPoint4,s2,port1=2,port2=3,bw=20) #Connect to S2.  Connects to box 2
 
         #switch connections
-        #Network slicing.  Send image data over larger bandwidth, send smaller data over the other link.
         #Middlebox 1
+        net.addLink(s1,s3,bw=50)
+        net.addLink(s2,s3,bw=50)
         #make remaining switch connections
         #Connect S4
         net.addLink(s3,s4,port1=5,port2=1,bw=75)
