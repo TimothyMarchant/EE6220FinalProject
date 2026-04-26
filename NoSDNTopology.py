@@ -54,8 +54,13 @@ def CameraTopology():
         Middlebox1=net.addHost('Mid1',ip='10.0.4.1') #Middlebox 1
         Middlebox2=net.addHost('Mid2',ip='10.0.4.2') #Middlebox 2
         Datacenter=net.addHost('data',ip='10.0.6.0') #Datacenter.
-        #
+        #Emergency car definition
         EmergencyCar1=net.addStation('EmerCar1', ip='10.1.0.1',position='500,25,0')
+        #Mobility definition.
+        net.startMobility(time=0, mob_rep=1, reverse=False)
+        net.mobility(EmergencyCar1, 'start', time=1, position='500,25,0')
+        net.mobility(EmergencyCar1, 'stop', time=12, position='1000,100,0')
+        net.stopMobility(time=15) 
         #net.setPropagationModel(model='logDistance', exp=3)
 
         net.configureNodes()
