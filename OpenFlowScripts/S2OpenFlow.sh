@@ -8,7 +8,8 @@ Middlebox1=10.0.4.1
 Middlebox2=10.0.4.2
 DataCenterIP=10.0.6.0
 EmergencyCenterIP=10.0.5.0
-EmergencyVehiclesIPRange=12.0.0.0/16
+EmergencyVehiclesIPRange=10.1.0.0/16
+EmergencyVehicle1IP=10.1.0.1
 #Camera IPs
 Camera1=10.0.0.1
 Camera2=10.0.0.2

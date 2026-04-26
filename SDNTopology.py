@@ -60,7 +60,7 @@ def CameraTopology():
         Middlebox2=net.addHost('Mid2',ip='10.0.4.2') #Middlebox 2
         Datacenter=net.addHost('data',ip='10.0.6.0') #Datacenter.
         #
-        EmergencyCar1=net.addStation('EmerCar1', ip='12.0.0.1',position='500,25,0')
+        EmergencyCar1=net.addStation('EmerCar1', ip='10.1.0.1',position='500,25,0')
         net.configureNodes()
         #Mobility definition.
         net.startMobility(time=0, mob_rep=1, reverse=False)

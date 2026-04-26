@@ -1,18 +1,19 @@
 #!/bin/bash
+SourceFolder=OpenFlowScripts
+chmod +x $SourceFolder/S1OpenFlow.sh
+chmod +x $SourceFolder/S2OpenFlow.sh
+chmod +x $SourceFolder/S3OpenFlow.sh
+chmod +x $SourceFolder/S4OpenFlow.sh
+chmod +x $SourceFolder/S5OpenFlow.sh
+chmod +x $SourceFolder/S6OpenFlow.sh
+chmod +x $SourceFolder/APOpenFlow.sh
 
-chmod +x S1OpenFlow.sh
-chmod +x S2OpenFlow.sh
-chmod +x S3OpenFlow.sh
-chmod +x S4OpenFlow.sh
-chmod +x S5OpenFlow.sh
-chmod +x S6OpenFlow.sh
-chmod +x APOpenFlow.sh
 
-./S1OpenFlow.sh
-./S2OpenFlow.sh
-./S3OpenFlow.sh
-./S4OpenFlow.sh
-./S5OpenFlow.sh
-./S6OpenFlow.sh
-./APOpenFlow.sh
+$SourceFolder/./S1OpenFlow.sh
+$SourceFolder/./S2OpenFlow.sh
+$SourceFolder/./S3OpenFlow.sh
+$SourceFolder/./S4OpenFlow.sh
+$SourceFolder/./S5OpenFlow.sh
+$SourceFolder/./S6OpenFlow.sh
+$SourceFolder/./APOpenFlow.sh
 
