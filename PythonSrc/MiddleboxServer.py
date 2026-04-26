@@ -100,7 +100,8 @@ def MiddleboxServer():
                   client, addr = ListeningSocket.accept()
                   print(addr)
                   AddressString=str(addr).split('.')
-                  if (AddressString[1]!=0):
+                  print(AddressString)
+                  if (AddressString[1]!='0'):
                       print("IP:"+str(addr))
                       threading.Thread(target=HandleEmergencyCar, args=(client,), daemon=True).start()
                       EmergencyCarsCount += 1
