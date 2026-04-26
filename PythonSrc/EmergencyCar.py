@@ -72,12 +72,15 @@ def EmergencyCarClient():
  global EmergencyCarIP
  global EmercenyCarPort
  global MiddleboxPort
+ global MiddleboxEmergency
+ global Flag
  boxnumber = 1
  response="defaultmsg" #Should never get send like this
 
  while True:
+  for i in MiddleboxIPs:
     try:
-        for i in MiddleboxIPs:
+        
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as MiddleboxSocket:
                 MiddleboxSocket.connect((i,MiddleboxPort))      
                 while True:
@@ -95,6 +98,8 @@ def EmergencyCarClient():
                         response="Refuse"
                     #Send response
                     MiddleboxSocket.send(response.encode())
+                    MiddleboxEmergency=False
+                    return
 
 
                     

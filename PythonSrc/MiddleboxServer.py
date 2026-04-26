@@ -55,28 +55,35 @@ def HandleEmergencyCar(CarSocket):
     global EmergencyAvailable
     global EmergencyCaller
     global EmergencyCarsCount
+    global CarAvailable
+    CarAvailable = True
     try:
         with CarSocket:
-            
+            print("Carsocket")
             while True:
                 if (EmergencyAvailable==True):
                     print("Emergency")
                     temp="Accident detected at:"+EmergencyCaller
                     CarSocket.send(temp.encode())
                     response = CarSocket.recv(1024).decode()
+                    print(response)
                     if (response == "Refuse"):
-                        CallEmergencyCenter(EmergencyCaller)
+                        CarAvailable = False
+                        while (CarAvailable == False):
+                           pass
                     else:
                         EmergencyAvailable = False
+                    break
 
     except Exception as e:
         
         print(e)
-    finally:
-        EmergencyCarsCount-=1
-        #should never happen
-        if (EmergencyCarsCount<0):
-            EmergencyCarsCount = 0
+
+    print("Ran Finally block")
+    EmergencyCarsCount-=1
+    #should never happen
+    if (EmergencyCarsCount<0):
+        EmergencyCarsCount = 0
 
 #Create server thread
 def MiddleboxServer():
@@ -95,7 +102,7 @@ def MiddleboxServer():
                   AddressString=str(addr).split('.')
                   if (AddressString[1]!=0):
                       print("IP:"+str(addr))
-                      threading.Thread(target=HandleEmergencyCar, args=(), daemon=True)
+                      threading.Thread(target=HandleEmergencyCar, args=(client,), daemon=True).start()
                       EmergencyCarsCount += 1
                   else:
                     threading.Thread(target=CameraConnection, args=(client,),daemon=True).start()
@@ -135,14 +142,14 @@ def CallEmergencyCenter(Caller):
 
 
 
-     EmergencyAvailable=False
+     
     
 
 
 def EmergencyLogic(Caller):
   global EmergencyCaller
   global EmergencyAvailable
-  EmergencyCaller=Caller
+  EmergencyCaller = Caller
   EmergencyAvailable = True
 
 
@@ -150,9 +157,14 @@ def Main():
     global EmergencyCarsCount
     global EmergencyAvailable
     global EmergencyCaller
+    global CarAvailable
     while True:
-        if (EmergencyAvailable and EmergencyCarsCount <=0):
+        if (EmergencyAvailable and (EmergencyCarsCount <=0 or CarAvailable == False)):
             CallEmergencyCenter(EmergencyCaller)
+            EmergencyAvailable=False
+            if (EmergencyCarsCount>0):
+                CarAvailable = True
+        time.sleep(0.01)
             
 
           

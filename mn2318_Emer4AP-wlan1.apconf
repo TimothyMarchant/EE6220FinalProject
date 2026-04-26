@@ -1,0 +1,8 @@
+interface=Emer4AP-wlan1
+driver=nl80211
+ssid=ssid-Emergency4AP
+wds_sta=1
+hw_mode=g
+channel=2
+ctrl_interface=/var/run/hostapd
+ctrl_interface_group=0
