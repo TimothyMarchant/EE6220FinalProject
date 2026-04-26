@@ -76,3 +76,7 @@ ovs-ofctl add-flow s2 priority=49,ip,ip_dst=$DataCenterIP,actions=output:$HighBa
 #Emergency AP
 ovs-ofctl add-flow s2 priority=120,in_port=$EmergencyAP1Port,actions=output:$MiddleboxPort
 ovs-ofctl add-flow s2 priority=110,in_port=$EmergencyAP2Port,actions=output:$MiddleboxPort
+#Emergency vehicle
+ovs-ofctl add-flow s2 priority=800,ip,nw_dst=$EmergencyVehicle1IP,actions=output:normal
+ovs-ofctl add-flow s2 priority=800,arp,nw_dst=$EmergencyVehicle1IP,actions=output:normal
+ovs-ofctl add-flow s2 priority=800,icmp,nw_dst=$EmergencyVehicle1IP,actions=output:normal

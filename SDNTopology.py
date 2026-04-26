@@ -61,10 +61,13 @@ def CameraTopology():
         Datacenter=net.addHost('data',ip='10.0.6.0') #Datacenter.
         #
         EmergencyCar1=net.addStation('EmerCar1', ip='12.0.0.1',position='500,25,0')
-        #net.setPropagationModel(model='logDistance', exp=3)
-
         net.configureNodes()
-
+        #Mobility definition.
+        net.startMobility(time=0, mob_rep=1, reverse=False)
+        net.mobility(EmergencyCar1, 'start', time=1, position='500,25,0')
+        net.mobility(EmergencyCar1, 'stop', time=180, position='1000,100,0')
+        net.stopMobility(time=181) 
+        #net.setPropagationModel(model='logDistance', exp=3)
 
         
         #Connections from hosts to switches
