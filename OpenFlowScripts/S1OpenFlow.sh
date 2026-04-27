@@ -68,9 +68,10 @@ ovs-ofctl add-flow s1 priority=701,in_port=$MiddleboxPort,dl_type=0x800,nw_proto
 #Higher priority for emergency center
 ovs-ofctl add-flow $HighBandWidth1 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=normal
 ovs-ofctl add-flow $HighBandWidth1 priority=100,actions=normal
+ovs-ofctl add-flow $HighBandWidth1 priority=300,arp,actions=drop #prevent cycles
 ovs-ofctl add-flow $LowBandWidth1 priority=200,ip,ip_dst=$EmergencyCenterIP,actions=normal
 ovs-ofctl add-flow $LowBandWidth1 priority=100,actions=normal
-ovs-ofctl add-flow $LowBandWidth1 priority=300,ARP,actions=drop #prevent cycles
+
 
 #For testing purposes define rules for ICMP
 ovs-ofctl add-flow s1 priority=50,icmp,ip_dst=$EmergencyCenterIP,actions=output:$HighBandWidthPort
