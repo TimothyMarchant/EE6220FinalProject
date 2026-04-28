@@ -38,6 +38,23 @@ EmergencyCaller=""
           
 EmergencyText = ""
 
+#SDN controller definitions
+SDNControllerIP=Localhost
+SDNPort = 6767
+#SDN CMDs
+CMDLength = 4
+EmergencyPort = 4
+#CMD format
+# CMDnumber, options
+# Emergency, Switch, CameraAP, CameraIP
+# NonEmergency, Switch, CameraAP, CameraIP
+# The first command will increase the priority for that caller and that particular station
+# The second command removes it.
+
+#Emergency CMD string
+EmergencyCMD = "Emergency"
+NonEmergencyCMD = "Nonemergency"
+
 def CameraConnection(CameraSocket):
   try:
     with CameraSocket:
@@ -142,16 +159,40 @@ def CallEmergencyCenter(Caller):
 
 
 
-
+def CallSDNController(MSGType,CameraNumber):
+    global SDNControllerIP
+    global SDNPort
+    SDNMsg=""
+    Switch=""
+    AP="Camera"
+    CameraIP=""
+    if (IP==Middlebox1IP):
+        Switch="s1"
+        AP=AP+str(CameraNumber)+"AP"
+        CameraIP="10.0.0."+str(CameraNumber)
+    elif(IP==Middlebox2IP):
+        Switch="s2"
+        AP=AP+str(CameraNumber+2)+"AP"
+        CameraIP="10.0.1."+str(CameraNumber+2)
+    SDNMsg=MSGType+","+Switch+","+AP+","+CameraIP
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as SDNSocket:
+            SDNSocket.connect(SDNControllerIP,SDNPort)
+            SDNSocket.send(SDNMsg.encode())
+            data = SDNSocket.recv(1024).decode()
+            print(data)
+    except Exception as e:
+        print(e)
      
     
 
 
-def EmergencyLogic(Caller):
+def EmergencyLogic(Caller,Number):
   global EmergencyCaller
   global EmergencyAvailable
   EmergencyCaller = Caller
   EmergencyAvailable = True
+  CallSDNController(EmergencyCMD,Number)
 
 
 def Main():

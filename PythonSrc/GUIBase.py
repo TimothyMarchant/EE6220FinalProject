@@ -41,9 +41,9 @@ class Middlebox_GUI:
             if event == sg.WIN_CLOSED or event == 'Exit':
                 break
             if event == self.Camera1:
-                self.EmergencyFunction1(self.Camera1)
+                self.EmergencyFunction1(self.Camera1,1)
             if event == self.Camera2:
-                self.EmergencyFunction2(self.Camera2)
+                self.EmergencyFunction2(self.Camera2,2)
             if event == 'Not Emergency 1' or event == 'Not Emergency 2':
                 print("No Emergency")
 
