@@ -183,7 +183,7 @@ def CallSDNController(MSGType,CameraNumber):
     SDNMsg=MSGType+","+Switch+","+AP+","+CameraIP
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as SDNSocket:
-            SDNSocket.connect((SDNControllerIP,SDNPort))
+            SDNSocket.connect(('localhost',SDNPort))
             SDNSocket.send(SDNMsg.encode())
             data = SDNSocket.recv(1024).decode()
             print(data)

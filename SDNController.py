@@ -54,7 +54,7 @@ EmergencyPort = 4
 EmergencyCMD = "Emergency"
 NonEmergencyCMD = "Nonemergency"
 def RunOpenFlowCMD(CMD):
-    subprocess.run(CMD, shel=True, executable="/bin/bash")
+    subprocess.run(CMD, shell=True, executable="/bin/bash")
 
 #Create server thread
 def HandleCaller(CallerSocket):
@@ -70,8 +70,8 @@ def HandleCaller(CallerSocket):
                 Switch = Command[1] #Get switch name
                 CameraAP = Command[2] #Get corresponding CameraAP
                 CameraIP = Command[3] #Get the camera of interest.  This matters more for when there is multiple cameras
-                AddflowSwitch = "ovs-ofctl add-flow " + Switch + "priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
-                AddflowAP = "ovs-ofctl add-flow " + CameraAP + "priority = 200,ip,ip_src="+CameraIP+",actions=output:normal"
+                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
+                AddflowAP = "ovs-ofctl add-flow " + CameraAP + " priority=200,ip,ip_src="+CameraIP+",actions=output:normal"
                 RunOpenFlowCMD(AddflowAP)
                 RunOpenFlowCMD(AddflowSwitch)
 
@@ -80,8 +80,8 @@ def HandleCaller(CallerSocket):
                 Switch = Command[1] #Get switch name
                 CameraAP = Command[2] #Get corresponding CameraAP
                 CameraIP = Command[3] #Get the camera of interest.  This matters more for when there is multiple cameras
-                DelflowSwitch = "ovs-ofctl del-flows " + Switch + "priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
-                DelflowAP = "ovs-ofctl del-flows " + CameraAP + "priority = 200,ip,ip_src="+CameraIP+",actions=output:normal"
+                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
+                DelflowAP = "ovs-ofctl del-flows " + CameraAP + " ip,ip_src="+CameraIP+",actions=output:normal"
                 RunOpenFlowCMD(DelflowAP)
                 RunOpenFlowCMD(DelflowSwitch)
                 
@@ -99,7 +99,7 @@ def SDNServer():
  global IP
  try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
-            ListeningSocket.bind(('', SDNPort))         
+            ListeningSocket.bind(('localhost', SDNPort))         
             print ("socket binded to %s" %(SDNPort)) 
             ListeningSocket.listen()     
             print ("socket is listening")  
