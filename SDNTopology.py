@@ -17,10 +17,12 @@ import re
 import sys
 net=Mininet_wifi(link = TCLink)
 
-ryu_ip = '127.0.0.1'
-ryu_port = 6653
+SND_IP = '127.0.0.1'
+SDN_Port = 6767
 
 def CameraTopology():
+        global SDN_IP
+        global SDN_Port
         global net
          #High bandwidth#Camera topology
         info("Creating Nodes\n")
@@ -35,7 +37,7 @@ def CameraTopology():
         CameraAccessPoint3=net.addAccessPoint('Camera3AP', ssid='ssid-Camera3AP', channel='1', position='10,1000,0')
         CameraAccessPoint4=net.addAccessPoint('Camera4AP', ssid='ssid-Camera4AP', channel='1', position='1010,1005,0')
         #Create a controller.
-        c1=net.addController('c1')
+        c1=net.addController('c1', Controller=RemoteController, ip=SDN_IP, port=SDN_Port)
         ##Switches
         #Add normal switches
         s1=net.addSwitch('s1')
