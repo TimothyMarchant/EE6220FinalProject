@@ -37,7 +37,8 @@ def CameraTopology():
         CameraAccessPoint3=net.addAccessPoint('Camera3AP', ssid='ssid-Camera3AP', channel='1', position='10,1000,0')
         CameraAccessPoint4=net.addAccessPoint('Camera4AP', ssid='ssid-Camera4AP', channel='1', position='1010,1005,0')
         #Create a controller.
-        c1=net.addController('c1', Controller=RemoteController, ip=SDN_IP, port=SDN_Port)
+
+        c1=net.addController('c0', Controller=RemoteController,ip='127.0.0.1',port=6767)
         ##Switches
         #Add normal switches
         s1=net.addSwitch('s1')
@@ -65,10 +66,10 @@ def CameraTopology():
         EmergencyCar1=net.addStation('EmerCar1', ip='10.1.0.1',position='1000,25,0')
         net.configureNodes()
         #Mobility definition.
-        net.startMobility(time=0, mob_rep=1, reverse=False)
-        net.mobility(EmergencyCar1, 'start', time=1, position='1000,25,0')
-        net.mobility(EmergencyCar1, 'stop', time=180, position='1000,900,0')
-        net.stopMobility(time=181) 
+        #net.startMobility(time=0, mob_rep=1, reverse=False)
+        #net.mobility(EmergencyCar1, 'start', time=1, position='1000,25,0')
+        #net.mobility(EmergencyCar1, 'stop', time=180, position='1000,900,0')
+        #net.stopMobility(time=181) 
         #net.setPropagationModel(model='logDistance', exp=3)
 
         

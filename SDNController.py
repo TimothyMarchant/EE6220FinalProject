@@ -62,6 +62,7 @@ def HandleCaller(CallerSocket):
         with CallerSocket:
             data=CallerSocket.recv(1024).decode()
             Command = data.split(',')
+            print(Command)
             if (len(Command)!=CMDLength):
                 print("Invalid CMD")
                 CallerSocket.send('Invalid Command length'.encode())
