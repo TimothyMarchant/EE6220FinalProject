@@ -1,7 +1,6 @@
 #!/usr/bin/python
 
 import socket
-import GUIBase
 import time
 import sys
 import threading     
