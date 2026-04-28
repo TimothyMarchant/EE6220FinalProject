@@ -34,7 +34,7 @@ CarAvailable = False
 EmergencyAvailable = False
 
 EmergencyCaller=""
-
+EmergencyCallerNumber=0
           
 EmergencyText = ""
 
@@ -72,6 +72,7 @@ def HandleEmergencyCar(CarSocket):
     global EmergencyAvailable
     global EmergencyCaller
     global EmergencyCarsCount
+    global EmergencyCallerNumber
     global CarAvailable
     CarAvailable = True
     try:
@@ -88,8 +89,10 @@ def HandleEmergencyCar(CarSocket):
                         CarAvailable = False
                         while (CarAvailable == False):
                            pass
+                    #Accept
                     else:
                         EmergencyAvailable = False
+                        CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
                     break
 
     except Exception as e:
@@ -129,11 +132,12 @@ def MiddleboxServer():
 
   # Breaking once connection closed
 def CallEmergencyCenter(Caller):
-     global EmergencyAvailable
-     EmergenyCenterPort = 7777                
-     EmergencyCenterIP="10.0.5.0"
+    global EmergencyCallerNumber
+    global EmergencyAvailable
+    EmergenyCenterPort = 7777                
+    EmergencyCenterIP="10.0.5.0"
      #EmergencyCenterIP=Localhost
-     try:
+    try:
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as EmergencySocket:
           EmergencySocket.connect((EmergencyCenterIP,EmergenyCenterPort))      
           while True:
@@ -154,12 +158,14 @@ def CallEmergencyCenter(Caller):
 
 
 
-     except Exception as e:
-         print(e)
+    except Exception as e:
+        print(e)
+    CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
 
 
 
 def CallSDNController(MSGType,CameraNumber):
+    global IP
     global SDNControllerIP
     global SDNPort
     SDNMsg=""
@@ -190,9 +196,12 @@ def CallSDNController(MSGType,CameraNumber):
 def EmergencyLogic(Caller,Number):
   global EmergencyCaller
   global EmergencyAvailable
+  global EmergencyCallerNumber
   EmergencyCaller = Caller
-  EmergencyAvailable = True
+  EmergencyCallerNumber = Number
   CallSDNController(EmergencyCMD,Number)
+  EmergencyAvailable = True
+
 
 
 def Main():
