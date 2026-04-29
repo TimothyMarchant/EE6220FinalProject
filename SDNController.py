@@ -57,15 +57,15 @@ def RunOpenFlowCMD(CMD):
     subprocess.run(CMD, shell=True, executable="/bin/bash")
 
 #Create server thread
-def HandleCaller(CallerSocket):
+def HandleCaller(CallerSocket, MSG, Address):
     try:
         with CallerSocket:
-            data=CallerSocket.recv(1024).decode()
+            data=MSG.decode()
             Command = data.split(',')
             print(Command)
             if (len(Command)!=CMDLength):
                 print("Invalid CMD")
-                CallerSocket.send('Invalid Command length'.encode())
+                CallerSocket.sendto('Invalid Command length'.encode(),Address)
                 return
             if (Command[0] == EmergencyCMD):
                 Switch = Command[1] #Get switch name
@@ -88,9 +88,9 @@ def HandleCaller(CallerSocket):
                 
             else:
                 print("Invalid CMD")
-                CallerSocket.send("InvalidCMD".encode())
+                CallerSocket.sendto("InvalidCMD".encode(),Address)
                 return
-            CallerSocket.send("Finished adding flows".encode())
+            CallerSocket.sendto("Finished adding flows".encode(),Address)
             print("Finished adding flows")
 
     except Exception as e:
@@ -99,17 +99,14 @@ def SDNServer():
  global Localhost
  global IP
  try:
-      with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
+      with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as ListeningSocket:
             ListeningSocket.bind(('localhost', SDNPort))         
             print ("socket binded to %s" %(SDNPort)) 
-            ListeningSocket.listen()     
-            print ("socket is listening")  
 
             while True: 
-                  client, addr = ListeningSocket.accept()
-                  print(addr)
+                  message, address = ListeningSocket.recvfrom(1024)
 
-                  threading.Thread(target=HandleCaller, args=(client,),daemon=True).start()
+                  threading.Thread(target=HandleCaller, args=(ListeningSocket,message,address,),daemon=True).start()
  except Exception as e:
      print(e)
 SDNServer()
