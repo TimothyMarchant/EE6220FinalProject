@@ -3,6 +3,8 @@ import GUIBase
 import time
 import sys
 import threading         
+import subprocess
+
 
 Arguments = sys.argv[1:]
 
@@ -162,32 +164,40 @@ def CallEmergencyCenter(Caller):
         print(e)
     CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
 
-
+def RunOpenFlowCMD(CMD):
+    subprocess.run(CMD, shell=True, executable="/bin/bash")
 
 def CallSDNController(MSGType,CameraNumber):
     global IP
     global SDNControllerIP
     global SDNPort
+    global EmergencyPort
     SDNMsg=""
     Switch=""
-    AP="Camera"
+    CameraAP="Camera"
     CameraIP=""
     if (IP==Middlebox1IP):
         Switch="s1"
-        AP=AP+str(CameraNumber)+"AP"
+        CameraAP=CameraAP+str(CameraNumber)+"AP"
         CameraIP="10.0.0."+str(CameraNumber)
     elif(IP==Middlebox2IP):
         Switch="s2"
-        AP=AP+str(CameraNumber+2)+"AP"
+        CameraAP=CameraAP+str(CameraNumber+2)+"AP"
         CameraIP="10.0.1."+str(CameraNumber+2)
-    SDNMsg=MSGType+","+Switch+","+AP+","+CameraIP
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as SDNSocket:
-            #SDNSocket.connect(('localhost',SDNPort))
-            SDNSocket.sendto(SDNMsg.encode(),('127.0.0.1',6767))
-            print("RAN")
-            data, server = SDNSocket.recvfrom(1024).decode()
-            print(data)
+        if (MSGType == EmergencyCMD):
+                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
+                AddflowAP = "ovs-ofctl add-flow " + CameraAP + " priority=200,ip,ip_src="+CameraIP+",actions=output:normal"
+                RunOpenFlowCMD(AddflowAP)
+                RunOpenFlowCMD(AddflowSwitch)
+
+                #Run command 
+        elif (MSGType == NonEmergencyCMD):
+                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
+                DelflowAP = "ovs-ofctl del-flows " + CameraAP + " ip,ip_src="+CameraIP+",actions=output:normal"
+                RunOpenFlowCMD(DelflowAP)
+                RunOpenFlowCMD(DelflowSwitch)
+        
     except Exception as e:
         print(e)
      
