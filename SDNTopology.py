@@ -86,17 +86,17 @@ def CameraTopology():
         #Network slicing.  Send image data over larger bandwidth, send smaller data over the other link.
         #Middlebox 1
         net.addLink(s1,Mid1HighBandwidthSwitch,port1=4,port2=1,bw=50)
-        net.addLink(s1,Mid1LowBandwidthSwitch,port1=5,port2=1,bw=2)
+        net.addLink(s1,Mid1LowBandwidthSwitch,port1=5,port2=1,bw=10)
         #Middlebox 2
         net.addLink(s2,Mid2HighBandwidthSwitch,port1=4,port2=1,bw=50)
-        net.addLink(s2,Mid2LowBandwidthSwitch,port1=5,port2=1,bw=2)
+        net.addLink(s2,Mid2LowBandwidthSwitch,port1=5,port2=1,bw=10)
         #Connect to switch 3 which connects the entire network.
         #connect S1
         net.addLink(Mid1HighBandwidthSwitch,s3,port1=2,port2=1,bw=50)
-        net.addLink(Mid1LowBandwidthSwitch,s3,port1=2,port2=2,bw=2)
+        net.addLink(Mid1LowBandwidthSwitch,s3,port1=2,port2=2,bw=10)
         #Connect S2
         net.addLink(Mid2HighBandwidthSwitch,s3,port1=2,port2=3,bw=50)
-        net.addLink(Mid2LowBandwidthSwitch,s3,port1=2,port2=4,bw=2)
+        net.addLink(Mid2LowBandwidthSwitch,s3,port1=2,port2=4,bw=10)
         #make remaining switch connections
         #Connect S4
         net.addLink(s3,s4,port1=5,port2=1,bw=75)

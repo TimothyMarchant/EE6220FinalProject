@@ -45,8 +45,8 @@ SDNControllerIP=Localhost
 SDNPort = 6767
 #SDN CMDs
 CMDLength = 4
-EmergencyPort = 4
-StandardPort = 5
+EmergencyPort = 5
+StandardPort = 4
 #CMD format
 # CMDnumber, options
 # Emergency, Switch, CameraAP, CameraIP
