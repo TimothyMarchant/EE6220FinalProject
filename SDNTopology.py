@@ -38,7 +38,7 @@ def CameraTopology():
         CameraAccessPoint4=net.addAccessPoint('Camera4AP', ssid='ssid-Camera4AP', channel='1', position='1010,1005,0')
         #Create a controller.
 
-        c1=net.addController('c0', Controller=RemoteController,ip='127.0.0.1',port=6767)
+        c1=net.addController('c0', Controller=RemoteController)
         ##Switches
         #Add normal switches
         s1=net.addSwitch('s1')

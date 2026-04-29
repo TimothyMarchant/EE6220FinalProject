@@ -182,10 +182,11 @@ def CallSDNController(MSGType,CameraNumber):
         CameraIP="10.0.1."+str(CameraNumber+2)
     SDNMsg=MSGType+","+Switch+","+AP+","+CameraIP
     try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as SDNSocket:
-            SDNSocket.connect(('localhost',SDNPort))
-            SDNSocket.send(SDNMsg.encode())
-            data = SDNSocket.recv(1024).decode()
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as SDNSocket:
+            #SDNSocket.connect(('localhost',SDNPort))
+            SDNSocket.sendto(SDNMsg.encode(),('127.0.0.1',6767))
+            print("RAN")
+            data, server = SDNSocket.recvfrom(1024).decode()
             print(data)
     except Exception as e:
         print(e)
