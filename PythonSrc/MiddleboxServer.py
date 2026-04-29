@@ -46,6 +46,7 @@ SDNPort = 6767
 #SDN CMDs
 CMDLength = 4
 EmergencyPort = 4
+StandardPort = 5
 #CMD format
 # CMDnumber, options
 # Emergency, Switch, CameraAP, CameraIP
@@ -186,17 +187,22 @@ def CallSDNController(MSGType,CameraNumber):
         CameraIP="10.0.1."+str(CameraNumber+2)
     try:
         if (MSGType == EmergencyCMD):
+                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP
                 AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
                 AddflowAP = "ovs-ofctl add-flow " + CameraAP + " priority=200,ip,ip_src="+CameraIP+",actions=output:normal"
                 RunOpenFlowCMD(AddflowAP)
+                RunOpenFlowCMD(DelflowSwitch)
                 RunOpenFlowCMD(AddflowSwitch)
 
                 #Run command 
         elif (MSGType == NonEmergencyCMD):
-                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
-                DelflowAP = "ovs-ofctl del-flows " + CameraAP + " ip,ip_src="+CameraIP+",actions=output:normal"
+                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP
+                DelflowAP = "ovs-ofctl del-flows " + CameraAP + " ip,ip_src="+CameraIP
+                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(StandardPort)
+
                 RunOpenFlowCMD(DelflowAP)
                 RunOpenFlowCMD(DelflowSwitch)
+                RunOpenFlowCMD(AddflowSwitch)
         
     except Exception as e:
         print(e)
