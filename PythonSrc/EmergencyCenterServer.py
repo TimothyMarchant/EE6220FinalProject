@@ -1,3 +1,16 @@
+"""
+By Timothy Marchant
+
+This program creates a TCP server that can accept the middleboxs.  Takes in a single packet (Pretend it's the image data of a crash)
+The program opens a GUI on startup.  You pick which cam corresponds to an emergency.  
+Unfortunately, it's not exactly well thought out so pressing CAM 2 also affects CAM 1 and likewise with CAM 3 and CAM 4
+It serves its purpose of being a proof of concept.
+
+Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
+e.g. you don't want emergency data to get lost, corrupted or arrive out of order.
+
+"""
+#import libaries.
 import socket
 import sys
 import threading
@@ -19,7 +32,7 @@ Middlebox2Emergency=False
 
 Midbox1Message='null'
 Midbox2Message='null'
-
+#Send data  to the middlebox letting it know the status of that particular event.
 def RespondToMiddleBox(MiddleboxSocket,IsAccident):
 
     global Flag1
@@ -29,59 +42,59 @@ def RespondToMiddleBox(MiddleboxSocket,IsAccident):
     else:
         MiddleboxSocket.send('NonAccident'.encode())
 
-
+#Handle middlebox socket as a new thread.
 def HandleMiddlebox(MiddleboxSocket,BoxNumber):
-  global Middlebox1Emergency
-  global Middlebox2Emergency
-  global Flag1
-  global Flag2
-  global MayMarkEmergency1
-  global MayMarkEmergency2
-  if (BoxNumber==1):
-     MayMarkEmergency1=True
-  else:
-     MayMarkEmergency2=True
-  try:
-    with MiddleboxSocket:
-            #CameraSocket.send('Thank you for connecting'.encode()) 
+    global Middlebox1Emergency
+    global Middlebox2Emergency
+    global Flag1
+    global Flag2
+    global MayMarkEmergency1
+    global MayMarkEmergency2
+    if (BoxNumber==1):
+        MayMarkEmergency1=True
+    else:
+        MayMarkEmergency2=True
+    try:
+        with MiddleboxSocket:
             while True:
-             #     print()
                   #Receive data indefinitely. 
-                  data=MiddleboxSocket.recv(1024).decode()
-                  print(data)
-                  if (BoxNumber==1):
+                data=MiddleboxSocket.recv(1024).decode()
+                print(data)
+                if (BoxNumber==1):
                     while (Middlebox1Emergency == False):
-                      pass
-                  elif (BoxNumber==2):
+                        pass
+                elif (BoxNumber==2):
                     while (Middlebox2Emergency == False):
-                      pass
+                        pass
                       
-                  print("Responding")
-                  if (BoxNumber==1 and Middlebox1Emergency):
-                      RespondToMiddleBox(MiddleboxSocket,Flag1)
-                      Flag1=0
-                      Middlebox1Emergency=False
-                      MayMarkEmergency1=False
-                      print("Middlebox 1 emergency")
-                      break
-                  elif (BoxNumber==2 and Middlebox2Emergency):
-                      RespondToMiddleBox(MiddleboxSocket,Flag2)
-                      Flag2=0
-                      Middlebox2Emergency=False
-                      MayMarkEmergency2=False
-                      print("Middlebox 2 emergency")
-                      break
+                print("Responding")
+                #Respond to the middlebox depending on the response from the emergency center.
+                if (BoxNumber==1 and Middlebox1Emergency):
+                    RespondToMiddleBox(MiddleboxSocket,Flag1)
+                    Flag1=0
+                    Middlebox1Emergency=False
+                    MayMarkEmergency1=False
+                    print("Middlebox 1 emergency")
+                    break
+                elif (BoxNumber==2 and Middlebox2Emergency):
+                    RespondToMiddleBox(MiddleboxSocket,Flag2)
+                    Flag2=0
+                    Middlebox2Emergency=False
+                    MayMarkEmergency2=False
+                    print("Middlebox 2 emergency")
+                    break
 
                       
 
-  except Exception as e:
-     print(e)
-#Create server thread
+    except Exception as e:
+        print(e)
+#Create server
 def EmergencyCenterServer():
- global EmergencyCenterIP
- global EmercenyCenterPort
- boxnumber=1
- try:
+    global EmergencyCenterIP
+    global EmercenyCenterPort
+    boxnumber=1
+    try:
+      #Create TCP server.
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
             ListeningSocket.bind((EmergencyCenterIP, EmercenyCenterPort))         
             print ("socket binded to %s" %(EmercenyCenterPort)) 
@@ -89,25 +102,27 @@ def EmergencyCenterServer():
             print ("socket is listening")  
 
             while True: 
-                #Establish connection with middlebox
-                  client, addr = ListeningSocket.accept()
-                  print(addr)
-                  AddressString=str(addr[0]).split('.')
-                  #print(AddressString[-1])
-                  if (AddressString[-1]=="1"):
-                      boxnumber=1
-                  elif(AddressString[-1]=="2"):
-                      boxnumber=2
-                  if(AddressString[2]!="4"):
-                      pass
-                  else:
-                    threading.Thread(target=HandleMiddlebox, args=(client,boxnumber,),daemon=True).start()
+                    #Establish connection with middlebox
+                    client, addr = ListeningSocket.accept()
+                    print(addr)
+                    AddressString=str(addr[0]).split('.')
+                    #Change boxnumber based on IP.  IPs correspond to differnet middleboxes.
+                    if (AddressString[-1]=="1"):
+                        boxnumber=1
                     
- except Exception as e:
-     print(e)
+                    elif(AddressString[-1]=="2"):
+                        boxnumber=2
+                    #ignore other clients that are not the middlebox.
+                    if(AddressString[2]!="4"):
+                        pass
+                    else:
+                        threading.Thread(target=HandleMiddlebox, args=(client,boxnumber,),daemon=True).start()
+                    
+    except Exception as e:
+        print(e)
      
-  # Breaking once connection closed
-
+###Called from the GUI.  Responses accordingly to the caller.
+###mark the correct middlebox and flag to mark the response as an emergency.
 def EmergencyResponse(Caller):
     global Flag1
     global Flag2
@@ -126,7 +141,7 @@ def EmergencyResponse(Caller):
         Middlebox2Emergency=True
         Flag2=1
     
-    
+###mark the correct middlebox and flag to mark the response as an nonemergency.
 def NonEmergencyResponse(Caller):
     global Flag1
     global Flag2
@@ -145,9 +160,10 @@ def NonEmergencyResponse(Caller):
         Middlebox2Emergency=True
         Flag2=0
 
-          
+#call emergency GUI    
 def EmergencyGUI():
-     GUI=GUIBase.EmergencyCenterGUI(EmergencyResponse,NonEmergencyResponse)
-     threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
+    GUI=GUIBase.EmergencyCenterGUI(EmergencyResponse,NonEmergencyResponse)
+    threading.Thread(target=GUI.RunGUI,args=(),daemon=True).start()
+#start programs.
 EmergencyGUI()
-threading.Thread(target=EmergencyCenterServer,args=(),daemon=False).start()
+EmergencyCenterServer()

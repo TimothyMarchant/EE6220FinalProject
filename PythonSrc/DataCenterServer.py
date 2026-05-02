@@ -3,10 +3,11 @@ By Timothy Marchant
 
 This program is very simple.  all it does is handle connection requests with the middlebox.  It accepts constant traffic from them.
 
-Don't remeber which sight I specifically followed TCP examples from (I think stackoverflow?)
+Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
+e.g. you don't want image data to get lost, corrupted or arrive out of order.
 
 """
-
+#import libaries.
 import socket
 #For handling multiple sockets.
 import threading

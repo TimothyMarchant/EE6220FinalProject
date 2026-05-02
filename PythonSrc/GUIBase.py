@@ -1,3 +1,13 @@
+"""
+By Timothy Marchant
+
+This file contains the definitions for all the GUIs used in this project.  They are very basic as I do not make user interfaces typically.
+They serve their purpose for a proof of concept and nothing more.
+I know there is code duplication and that it can be written much better, but I was in a hurry and needed to make something fast.
+Thankfully SimpleGUI wasn't that hard to use... unlike some other things...
+
+"""
+
 import PySimpleGUI as sg
 import threading
 

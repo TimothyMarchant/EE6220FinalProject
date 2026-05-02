@@ -4,7 +4,10 @@ By Timothy Marchant
 All this program does is send data forever to the middleboxes.  
 There is a slight delay between transmissions due to performance problems with mininet.
 
-Don't remeber which sight I specifically followed TCP examples from (I think stackoverflow?)
+Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
+e.g. you don't want important image data to get lost, corrupted or arrive out of order.
+
+
 """
 import socket
 import time

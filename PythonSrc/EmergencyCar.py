@@ -8,10 +8,11 @@ The user can accept or refuse the request depending on the scenario.  For this p
 It makes more sense to handle this in the application layer not L3.  
 
 
-Don't remeber which sight I specifically followed TCP examples from (I think stackoverflow?)
+Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
+e.g. you don't want emergency data to get lost, corrupted or arrive out of order.
 
 """
-
+#import libaries.
 import socket
 import sys
 import threading

@@ -5,18 +5,21 @@ This file hosts the middlebox code.
 It hosts it's server and also makes all necessary connections to the data center and emergency center.
 It also accepts connections from the emergency cars.
 
+Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
+
+Also TCP was used since the data we are using should have all the services that TCP provides.
+e.g. you don't want emergency data to get lost, corrupted or arrive out of order.
+
 """
 
 
-###Imports
-
+#import libaries.
 import socket
 import GUIBase
 import SDNFunctions
 import time
 import sys
 import threading         
-import subprocess
 
 
 Arguments = sys.argv[1:]
