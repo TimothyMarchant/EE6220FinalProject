@@ -23,3 +23,4 @@ The network is ready now.  This one has a lot of restrictions to where traffic i
 Unfortunately Mininet doesn't like large networks (also it does very badly with cycles, even with proper rules) so results will vary.  
 
 The only thing I gathered from this project is how OpenFlow works, some SDN concepts that I couldn't apply. Very little time was spent on actually solving a problem, most of it was spent trying to figure out why the tools do not work. 
+Which really means that this project did not contribute to my knowledge really and felt like a massive waste of time.  Figuring out tooling does not give actual value to learning SDN if anything it just hampers it and shows the course is not thoughtout in the SDN portion. 
