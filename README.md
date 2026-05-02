@@ -1,4 +1,4 @@
-This Repo is for our course project in EE6220 where we were supposed to use SDN to improve network performance.  This repo has two subfolders PythonSrc and OpenFlowScripts.  PythonSrc has all the python applications meant to be ran on each node.  OpenFlowScripts is were the flows are stored there is some automation.  On the top folder, there is two topology scripts where one is meant to be used with no SDN (routers act normal) and SDN (routers follow OpenFlow flows).  
+This Repo is for our course project in EE6220 where we were supposed to use SDN to improve network performance.  This repo has two subfolders PythonSrc and OpenFlowScripts.  PythonSrc has all the python applications meant to be ran on each node.  OpenFlowScripts is were the flows are stored there is some automation.  On the top folder, there is two topology scripts where one is meant to be used with no SDN (routers act normal) and SDN (routers follow OpenFlow flows).  All plots are stored in Plots.ipynb.  The figures are saved in Images.
 
 To run the No SDN topology run the following
 
