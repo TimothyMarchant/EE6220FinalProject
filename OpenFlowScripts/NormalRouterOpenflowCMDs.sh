@@ -1,4 +1,10 @@
 #!/bin/bash
+
+###The purpose of this file is to add flows that treat all APs and switches as normal routers.
+### this is to make a base line for No SDN.  
+###Techincally since we are applying openflow rules this is SDN, but treating them like normal routers does not change anything.
+
+
 #Regular APs
 ovs-ofctl add-flow Camera1AP actions=normal
 ovs-ofctl add-flow Camera2AP actions=normal

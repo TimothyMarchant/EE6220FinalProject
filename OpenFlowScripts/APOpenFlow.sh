@@ -1,4 +1,7 @@
 #!/bin/bash
+#This one is actually very simple
+#The only purpose of this script is to add basic flows to the APs so that they work as intended.
+
 
 #define IP addresses
 Camera1IPRange=10.0.0.0/24
@@ -27,12 +30,13 @@ TextDataPort=80
 
 
 
-###Nothing special for this one.  Simply act like a normal router.
+###Nothing special for this one.  Simply act like a normal router.  These have only one wired connection making it easy to work with.
+###The SDN commands that get sent by the middlebox add flows to these APs to account for higher traffic.
 ovs-ofctl add-flow Camera1AP actions=normal
 ovs-ofctl add-flow Camera2AP actions=normal
 ovs-ofctl add-flow Camera3AP actions=normal
 ovs-ofctl add-flow Camera4AP actions=normal
-
+###Add flows to emergency APs.
 ovs-ofctl add-flow Emer1AP actions=normal
 ovs-ofctl add-flow Emer2AP actions=normal
 ovs-ofctl add-flow Emer3AP actions=normal
