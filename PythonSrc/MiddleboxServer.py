@@ -92,6 +92,7 @@ def HandleEmergencyCar(CarSocket):
     global EmergencyCarsCount
     global EmergencyCallerNumber
     global CarAvailable
+    global IP
     CarAvailable = True
     try:
         with CarSocket:
@@ -110,7 +111,7 @@ def HandleEmergencyCar(CarSocket):
                     #Accept
                     else:
                         EmergencyAvailable = False
-                        SDNFunctions.CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
+                        SDNFunctions.CallSDNController(IP,NonEmergencyCMD,EmergencyCallerNumber)
                     break
 
     except Exception as e:

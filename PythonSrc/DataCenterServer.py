@@ -52,7 +52,7 @@ def DataCenterServer():
                       pass
                   else:
                     #pass socket to seperate thread for processing it.
-                    threading.Thread(target=HandleMiddlebox, args=(client)).start()
+                    threading.Thread(target=HandleMiddlebox, args=(client,),daemon=False).start()
  except Exception as e:
      print(e)
 
