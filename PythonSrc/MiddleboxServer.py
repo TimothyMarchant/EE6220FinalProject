@@ -4,6 +4,7 @@ import time
 import sys
 import threading         
 import subprocess
+import SDNFunctions
 
 
 Arguments = sys.argv[1:]
@@ -214,6 +215,7 @@ def EmergencyLogic(Caller,Number):
   global EmergencyCaller
   global EmergencyAvailable
   global EmergencyCallerNumber
+  global IP
   EmergencyCaller = Caller
   EmergencyCallerNumber = Number
   CallSDNController(EmergencyCMD,Number)
