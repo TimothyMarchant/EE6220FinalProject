@@ -1,10 +1,22 @@
+"""
+By Timothy Marchant
+
+This file hosts the middlebox code.  
+It hosts it's server and also makes all necessary connections to the data center and emergency center.
+It also accepts connections from the emergency cars.
+
+"""
+
+
+###Imports
+
 import socket
 import GUIBase
+import SDNFunctions
 import time
 import sys
 import threading         
 import subprocess
-import SDNFunctions
 
 
 Arguments = sys.argv[1:]
@@ -13,12 +25,11 @@ if (len(Arguments)!=4):
    print("Incorrect number of arguments")
    exit()
 
-# first of all import the socket library 
-
-# next create a socket object 
+#IP addresses
 Localhost="127.0.0.1"
 Middlebox1IP="10.0.4.1"
 Middlebox2IP="10.0.4.2"
+#define this device's ip address.
 IP=Arguments[-1]
 #portnumber 
 
@@ -96,7 +107,7 @@ def HandleEmergencyCar(CarSocket):
                     #Accept
                     else:
                         EmergencyAvailable = False
-                        CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
+                        SDNFunctions.CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
                     break
 
     except Exception as e:
@@ -138,6 +149,7 @@ def MiddleboxServer():
 def CallEmergencyCenter(Caller):
     global EmergencyCallerNumber
     global EmergencyAvailable
+    global IP
     EmergenyCenterPort = 7777                
     EmergencyCenterIP="10.0.5.0"
      #EmergencyCenterIP=Localhost
@@ -164,50 +176,8 @@ def CallEmergencyCenter(Caller):
 
     except Exception as e:
         print(e)
-    CallSDNController(NonEmergencyCMD,EmergencyCallerNumber)
+    SDNFunctions.CallSDNController(IP,NonEmergencyCMD,EmergencyCallerNumber)
 
-def RunOpenFlowCMD(CMD):
-    subprocess.run(CMD, shell=True, executable="/bin/bash")
-
-def CallSDNController(MSGType,CameraNumber):
-    global IP
-    global SDNControllerIP
-    global SDNPort
-    global EmergencyPort
-    SDNMsg=""
-    Switch=""
-    CameraAP="Camera"
-    CameraIP=""
-    if (IP==Middlebox1IP):
-        Switch="s1"
-        CameraAP=CameraAP+str(CameraNumber)+"AP"
-        CameraIP="10.0.0."+str(CameraNumber)
-    elif(IP==Middlebox2IP):
-        Switch="s2"
-        CameraAP=CameraAP+str(CameraNumber+2)+"AP"
-        CameraIP="10.0.1."+str(CameraNumber+2)
-    try:
-        if (MSGType == EmergencyCMD):
-                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP
-                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
-                AddflowAP = "ovs-ofctl add-flow " + CameraAP + " priority=200,ip,ip_src="+CameraIP+",actions=output:normal"
-                RunOpenFlowCMD(AddflowAP)
-                RunOpenFlowCMD(DelflowSwitch)
-                RunOpenFlowCMD(AddflowSwitch)
-
-                #Run command 
-        elif (MSGType == NonEmergencyCMD):
-                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP
-                DelflowAP = "ovs-ofctl del-flows " + CameraAP + " ip,ip_src="+CameraIP
-                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(StandardPort)
-
-                RunOpenFlowCMD(DelflowAP)
-                RunOpenFlowCMD(DelflowSwitch)
-                RunOpenFlowCMD(AddflowSwitch)
-        
-    except Exception as e:
-        print(e)
-     
     
 
 
@@ -218,7 +188,8 @@ def EmergencyLogic(Caller,Number):
   global IP
   EmergencyCaller = Caller
   EmergencyCallerNumber = Number
-  CallSDNController(EmergencyCMD,Number)
+  
+  SDNFunctions.CallSDNController(IP,EmergencyCMD,Number)
   EmergencyAvailable = True
 
 

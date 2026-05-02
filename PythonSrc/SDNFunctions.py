@@ -4,12 +4,9 @@ The purpose of this file is to host all the automated SDN functions.  we are not
 
 """
 
-
-import socket
-import time
-import sys
-import threading     
 import subprocess
+
+
 OpenflowScripts=""
 
 Localhost="127.0.0.1"
