@@ -61,10 +61,10 @@ def CameraTopology():
         EmergencyCar1=net.addStation('EmerCar1', ip='10.1.0.1',position='1000,25,0')
         net.configureNodes()
         #Mobility definition.
-        #net.startMobility(time=0, mob_rep=1, reverse=False)
-        #net.mobility(EmergencyCar1, 'start', time=1, position='1000,25,0')
-        #net.mobility(EmergencyCar1, 'stop', time=180, position='1000,900,0')
-        #net.stopMobility(time=181) 
+        net.startMobility(time=0, mob_rep=1, reverse=False)
+        net.mobility(EmergencyCar1, 'start', time=1, position='1000,25,0')
+        net.mobility(EmergencyCar1, 'stop', time=180, position='1000,900,0')
+        net.stopMobility(time=181) 
         #net.setPropagationModel(model='logDistance', exp=3)
 
         
