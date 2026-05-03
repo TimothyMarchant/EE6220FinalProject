@@ -21,6 +21,13 @@ SND_IP = '127.0.0.1'
 SDN_Port = 6767
 
 def CameraTopology():
+        '''
+        This topology establishes 4 cameras connected to 4 camera access points.
+        Switches are in line to connect the camera access points, middleboxes, 
+        and emergency service center. The links for the devices are established in
+        the links section, using the switches with identified physical ports.
+        '''
+        
         global SDN_IP
         global SDN_Port
         global net
@@ -110,9 +117,6 @@ def CameraTopology():
         EmergencyAP2.start([c1])
         EmergencyAP3.start([c1])
         EmergencyAP4.start([c1])
-
-
-
 
 setLogLevel('info')
 
