@@ -20,5 +20,3 @@ ovs-ofctl add-flow Emer4AP priority=100,actions=normal
 ovs-ofctl add-flow s1 priority=100,actions=normal
 ovs-ofctl add-flow s2 priority=100,actions=normal
 ovs-ofctl add-flow s3 priority=100,actions=normal
-ovs-ofctl add-flow s4 priority=100,actions=normal
-ovs-ofctl add-flow s5 priority=100,actions=normal

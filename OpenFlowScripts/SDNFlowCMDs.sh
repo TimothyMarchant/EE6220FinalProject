@@ -1,4 +1,10 @@
 #!/bin/bash
+
+###Originally I had multiple bash scripts doing a lot of complicated forwarding.  
+###Unfortunately when I do the slight automation it performs better than the original scripts I had.  
+###These variables are leftover from that.
+
+
 ###Variables
 SourceFolder=OpenFlowScripts
 #define IP addresses
@@ -17,19 +23,6 @@ Camera1=10.0.0.1
 Camera2=10.0.0.2
 Camera3=10.0.1.1
 Camera4=10.0.1.2
-###ports are defined for more accurate forwarding.
-#port towards middlebox
-MiddleboxPort=1
-#Network Slicing
-HighBandWidthPort=4
-LowBandWidthPort=5
-HighBandWidth1=s1HIGH
-LowBandWidth1=s1LOW
-HighBandWidth2=s2HIGH
-LowBandWidth2=s2LOW
-#EmergencyAP
-EmergencyAP1Port=6
-EmergencyAP2Port=7
 
 #Port numbers we care about.
 ImageServerPort=7777
@@ -44,5 +37,5 @@ ovs-ofctl add-flow s1 priority=300,ip,ip_dst=$Middlebox2,actions=drop
 ovs-ofctl add-flow s2 priority=300,ip,ip_src=$Middlebox1,actions=drop
 ovs-ofctl add-flow s2 priority=300,ip,ip_dst=$Middlebox1,actions=drop
 
-
+###New flows get added/deleted by the middlebox.  Adding a bunch of flows breaks things.
 
