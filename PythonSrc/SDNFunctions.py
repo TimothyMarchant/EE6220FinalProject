@@ -74,30 +74,26 @@ def CallSDNController(IP,MSGType,CameraNumber):
     ###
     try:
         ###If emergency add flows such that the offending camera has higher priority than the other cameras associated with its AP.
+        ###Add higher priority flows
         if (MSGType == EmergencyCMD):
-                #Delete default path flow.
-                DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP
                 #Switch to the emergency lane path.  This dedicates bandwidth meant for only that camera essentially.
-                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(EmergencyPort)
+                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:normal"
                 #Add flow to camera.
-                AddflowAP = "ovs-ofctl add-flow " + CameraAP + " priority=200,ip,ip_src="+CameraIP+",actions=output:normal"
+                AddflowAP = "ovs-ofctl add-flow " + Switch + " priority=200,ip,ip_src="+CameraIP+",actions=output:normal"
                 #run openflow cmds.
                 RunOpenFlowCMD(AddflowAP)
-                RunOpenFlowCMD(DelflowSwitch)
                 RunOpenFlowCMD(AddflowSwitch)
 
                 #Run command 
+        ###delete higher priority flows.
         elif (MSGType == NonEmergencyCMD):
                 #delte emergency lane path flow.
                 DelflowSwitch = "ovs-ofctl del-flows " + Switch + " ip,ip_dst="+EmergencyCenterIP
                 #delte higher priority camera flow.
-                DelflowAP = "ovs-ofctl del-flows " + CameraAP + " ip,ip_src="+CameraIP
-                #return to original path flow.
-                AddflowSwitch = "ovs-ofctl add-flow " + Switch + " priority=300,ip,ip_dst="+EmergencyCenterIP+",actions=output:"+str(StandardPort)
+                DelflowAP = "ovs-ofctl del-flows " + Switch + " ip,ip_src="+CameraIP
                 #Run openflow cmds.
                 RunOpenFlowCMD(DelflowAP)
                 RunOpenFlowCMD(DelflowSwitch)
-                RunOpenFlowCMD(AddflowSwitch)
         
     except Exception as e:
         print(e)
