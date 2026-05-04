@@ -6,11 +6,6 @@ Middlebox 1 and then middlebox 2.  It stays connected to the first one it can co
 It waits for data from the server before having a GUI pop up.
 The user can accept or refuse the request depending on the scenario.  For this project it just acts as a proof of concept of how the network should work.
 It makes more sense to handle this in the application layer not L3.  
-
-
-Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
-e.g. you don't want emergency data to get lost, corrupted or arrive out of order.
-
 """
 #import libaries.
 import socket
@@ -44,9 +39,11 @@ MiddleboxIPs = [Middlebox1IP, Middlebox2IP]
 
 
 Title = Arguments[0]
-
-#Create Client.  It connects to the middlebox and waits for a response at some point (if one is ever given)
 def EmergencyCarClient():
+    '''
+    This function creates the Emergency Car station network logic, establishing sockets, and 
+    listening on the stream until terminated.
+    '''
     global EmercenyCarPort
     global MiddleboxPort
     global MiddleboxEmergency
@@ -91,10 +88,13 @@ def EmergencyCarClient():
             except Exception as e:
                 print(e)
      
-##GUI button functions.
-##Reused from other code, but essentially meant to change certain flags in the main server program. (that's why caller is unused)
-#Change flags for emergency.
+'''
+GUI BUTTON HELPER FUNCTIONS
+
+Sets Flags to handle emergency vs non emergency responses.
+'''
 def EmergencyResponse(Caller):
+   
     global Flag
     global MiddleboxEmergency
     global ACCEPTFLAG

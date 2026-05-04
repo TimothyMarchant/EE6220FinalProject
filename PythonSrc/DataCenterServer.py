@@ -21,7 +21,9 @@ DataCenterIP = "10.0.6.0"
 
 ###Handle middlebox socket to take data indefinitely.
 def HandleMiddlebox(MiddleboxSocket):
-
+  '''
+  This function establishes the middlebox socket to run indefinitely.
+  '''
   try:
     with MiddleboxSocket:
 
@@ -31,11 +33,16 @@ def HandleMiddlebox(MiddleboxSocket):
 
   except Exception as e:
      print(e)
-#Create server
+     
+
 def DataCenterServer():
- global DataCenterIP
- global DataCenterPort
- try:
+  '''
+  This function creates a TCP socket for listening on the DataCenter ports
+  defined in the topology. The socket is set up to listen until terminated.
+  '''
+  global DataCenterIP
+  global DataCenterPort
+  try:
       #setup TCP socket.
       with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as ListeningSocket:
             ListeningSocket.bind((DataCenterIP, DataCenterPort))         
@@ -53,8 +60,9 @@ def DataCenterServer():
                   else:
                     #pass socket to seperate thread for processing it.
                     threading.Thread(target=HandleMiddlebox, args=(client,),daemon=False).start()
- except Exception as e:
+  except Exception as e:
      print(e)
 
-
+#Call the DataCenterServer function which then greats the threads for handle Middlebox
+#Essentially this is the "main" section of the code
 DataCenterServer()

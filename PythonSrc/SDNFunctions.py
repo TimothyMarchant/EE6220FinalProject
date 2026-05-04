@@ -1,6 +1,6 @@
 #!/usr/bin/python
 """
-The purpose of this file is to host all the automated SDN functions.  we are not using Ryu due to time constraints.  
+The purpose of this file is to host all the automated SDN functions.  We are not using Ryu.
 
 """
 
@@ -51,11 +51,14 @@ NonEmergencyCMD = "Nonemergency"
 def RunOpenFlowCMD(CMD):
     subprocess.run(CMD, shell=True, executable="/bin/bash")
 
-###Middlebox calls this.  Centralized control means one point of failure, we don't want that.
-###IP refers to middlebox IP.  
-###MSGType refers to if the change is for an emergency vs nonemergency
-###CameraNumber refers to the offending camera that needs modification for its flow.
+
 def CallSDNController(IP,MSGType,CameraNumber):
+    '''
+    Middlebox calls this.  Centralized control means one point of failure, we don't want that.
+    IP refers to middlebox IP.  
+    MSGType refers to if the change is for an emergency vs nonemergency
+    CameraNumber refers to the offending camera that needs modification for its flow.
+    '''
     global SDNControllerIP
     global SDNPort
     global EmergencyPort

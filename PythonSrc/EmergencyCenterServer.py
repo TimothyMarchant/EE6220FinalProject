@@ -1,13 +1,10 @@
 """
 By Timothy Marchant
 
-This program creates a TCP server that can accept the middleboxs.  Takes in a single packet (Pretend it's the image data of a crash)
-The program opens a GUI on startup.  You pick which cam corresponds to an emergency.  
-Unfortunately, it's not exactly well thought out so pressing CAM 2 also affects CAM 1 and likewise with CAM 3 and CAM 4
-It serves its purpose of being a proof of concept.
-
-Don't remember which site I specifically followed TCP examples from (I think stackoverflow?)
-e.g. you don't want emergency data to get lost, corrupted or arrive out of order.
+This program creates a TCP server that can accept the middleboxes.
+The program opens a GUI on startup.  You pick which cam corresponds to an emergency.
+Maturity is prototypical, serves current project purpose.
+TODO: Pressing CAM 2 also affects CAM 1 and likewise with CAM 3 and CAM 4
 
 """
 #import libaries.
@@ -28,13 +25,13 @@ MayMarkEmergency2=False
 Middlebox1Emergency=False
 Middlebox2Emergency=False
 
-
-
 Midbox1Message='null'
 Midbox2Message='null'
 #Send data  to the middlebox letting it know the status of that particular event.
 def RespondToMiddleBox(MiddleboxSocket,IsAccident):
-
+    '''
+    Helper function to encode message
+    '''
     global Flag1
     global Flag2
     if (IsAccident):
@@ -42,8 +39,11 @@ def RespondToMiddleBox(MiddleboxSocket,IsAccident):
     else:
         MiddleboxSocket.send('NonAccident'.encode())
 
-#Handle middlebox socket as a new thread.
+
 def HandleMiddlebox(MiddleboxSocket,BoxNumber):
+    '''
+    Establishes Middlebox socket that receives data until terminated.
+    '''
     global Middlebox1Emergency
     global Middlebox2Emergency
     global Flag1
@@ -88,7 +88,7 @@ def HandleMiddlebox(MiddleboxSocket,BoxNumber):
 
     except Exception as e:
         print(e)
-#Create server
+
 def EmergencyCenterServer():
     global EmergencyCenterIP
     global EmercenyCenterPort
@@ -120,9 +120,13 @@ def EmergencyCenterServer():
                     
     except Exception as e:
         print(e)
-     
-###Called from the GUI.  Responses accordingly to the caller.
-###mark the correct middlebox and flag to mark the response as an emergency.
+        
+'''
+GUI BUTTON HELPER FUNCTIONS
+
+Real-time emulator functions that allow user to mark a middlebox and respond to an emergency.
+Includes Emergency and Non-emergency response.
+'''
 def EmergencyResponse(Caller):
     global Flag1
     global Flag2

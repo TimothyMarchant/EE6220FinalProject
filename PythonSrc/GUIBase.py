@@ -1,20 +1,21 @@
 """
 By Timothy Marchant
 
-This file contains the definitions for all the GUIs used in this project.  They are very basic as I do not make user interfaces typically.
-They serve their purpose for a proof of concept and nothing more.
-I know there is code duplication and that it can be written much better, but I was in a hurry and needed to make something fast.
-Thankfully SimpleGUI wasn't that hard to use... unlike some other things...
-
+This file contains the definitions for all the GUIs used in this project.
+Maturity is prototypical, serves current project.
+TODO: Code refactor. Condense duplicate functions and utilize polymorphism where available
 """
 
 import PySimpleGUI as sg
 import threading
 
 class Middlebox_GUI:
+    '''
+    GUI to monitor MiddleBox
+    '''
+    
     def DefaultFunction(Argu):
         print("Emergency")
-
 
     Title = 'Middlebox'
     Camera1='Camera 1'
@@ -28,8 +29,6 @@ class Middlebox_GUI:
         self.EmergencyFunction1=EmergencyFunc1
         self.EmergencyFunction2=EmergencyFunc2
         
-
-    
     def RunGUI(self):
         LeftColumn = [
         [sg.Text(self.Camera1)],
@@ -43,7 +42,6 @@ class Middlebox_GUI:
         Exit = [
         [sg.Button('Exit')]
         ]
-
         window=sg.Window(title=self.Title, layout=[LeftColumn,RightColumn,Exit], margins=(144,144))
         while True:
             event, values = window.read()
@@ -57,9 +55,12 @@ class Middlebox_GUI:
             if event == 'Not Emergency 1' or event == 'Not Emergency 2':
                 print("No Emergency")
 
-
         window.close()
+        
 class EmergencyCenterGUI:
+    '''
+    GUI to Monitor Emergency Center and initiate emergency notifications by location
+    '''
     def defaultfunction(args):
         print()
     Title = 'Emergency Center'
@@ -129,11 +130,13 @@ class EmergencyCenterGUI:
 
         window.close()
 
-
 class EmergencyGUI:
+    '''
+    GUI to Initiate Emergency vehicle responses (accept emergency request or refuse)
+    '''
+    
     def defaultfunction(args):
         print()
-
 
     Title = 'Emergency'
     Caller = 'Caller'
