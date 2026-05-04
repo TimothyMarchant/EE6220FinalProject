@@ -1,5 +1,4 @@
 #!/usr/bin/python
-#need to change a few things.
 from mininet.net import Mininet
 from mininet.node import Controller, RemoteController, OVSKernelSwitch
 from mininet.cli import CLI
